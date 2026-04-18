@@ -8,31 +8,36 @@ import Module from './module.js'
 
 export default class ModuleEQ extends Module {
   width = 96
-  height = 48
+  height = 56
   sprite = 'module_eq'
-  outputHeight = 30
+  outputHeight = 32
+  parameters = {
+    input: {
+      inputHeight: 20,
+      isSignal: true,
+    },
+    frequency: {
+      inputHeight: 27,
+      defaultValue: 0.7,
+    },
+    width: {
+      inputHeight: 34,
+      defaultValue: 0.2,
+    },
+    gain: {
+      inputHeight: 41,
+      defaultValue: 0.68,
+    },
+    bypass: {
+      inputHeight: 48,
+      isBoolean: true,
+    },
+  }
 
   constructor(position) {
-    const parameters = {
-      frequency: {
-        inputHeight: 20,
-        defaultValue: 0.7,
-      },
-      width: {
-        inputHeight: 27,
-        defaultValue: 0.2,
-      },
-      gain: {
-        inputHeight: 34,
-        defaultValue: 0.7,
-      },
-      bypass: {
-        inputHeight: 41,
-        isBoolean: true,
-      },
-    }
+    super(position);
 
-    super(position, parameters);
+    this.init();
   }
 
   draw() {
@@ -40,9 +45,9 @@ export default class ModuleEQ extends Module {
 
     // EQ chart
     const EQ_X = 34;
-    const EQ_Y = 30;
+    const EQ_Y = 32;
     const EQ_WIDTH = 53;
-    const EQ_HEIGHT = 12;
+    const EQ_HEIGHT = 14;
     for (let i = 0; i < EQ_WIDTH; i ++) {
       const val = i / (EQ_WIDTH - 1);
       const output = this.eqDisplayCurve(val, this.parameterValues.frequency, this.parameterValues.width, this.parameterValues.gain);
@@ -56,7 +61,7 @@ export default class ModuleEQ extends Module {
         width: 1,
         height: 1,
         color: [0, 0, 1],
-        depth: this.depth + 1,
+        depth: this.depth + 2,
       })
     }
   }
