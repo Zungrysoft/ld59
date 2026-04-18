@@ -1,12 +1,12 @@
 {
-    "intro": {
-        "file": "intro.wav",
+    "test": {
+        "file": "test",
         "volume": 0.8,
-        "title": "Introduction",
+        "title": "Test Cassette",
         "color_1": "AD2A67",
         "color_2": "7B254D",
         "color_3": "DE6933",
-        "points_to_unlock": 3,
+        "points_to_unlock": 0,
         "transcriptions": [
             "and so it came to pass that it was good",
             "second voice is talking here",

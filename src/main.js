@@ -79,7 +79,7 @@ game.setScene(() => {
   game.addThing(new AudioSystem());
   game.addThing(new ModuleEQ([170, 70]));
   game.addThing(new ModuleTapedeck([20, 20]));
-  game.addThing(new ModuleSpeakers([300, 80]));
+  game.addThing(new ModuleSpeakers([game.getWidth() - 32 - 2, 2]));
 
   game.globals.soundWave = [0, 0, 0, 0, 0, 0, 0, 0]
 

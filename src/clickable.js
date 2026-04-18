@@ -28,6 +28,14 @@ export default class Clickable extends Thing {
     this.parent.onClickChild(this.key);
   }
 
+  onRelease() {
+    if (!this?.parent?.onReleaseChild) {
+      return;
+    }
+
+    this.parent.onReleaseChild(this.key);
+  }
+
   getAabb() {
     let parentPos = [0, 0];
     if (this.parent?.position) {

@@ -64,7 +64,11 @@ export default class Module extends Thing {
           return false;
         }
       }
-      
+    }
+    else {
+      if (this.parameters?.[key]?.isSignal && this.getPreviousModule(key) == null) {
+        return false;
+      }
     }
 
     return true;
@@ -96,8 +100,22 @@ export default class Module extends Thing {
         }
         else {
           // TODO: Manual parameter adjustment
+          if (this.parameters[key].isBoolean) {
+            this.parameterValues[key] = !this.parameterValues[key];
+          }
+          else {
+            this.editingParameter = key;
+            this.editingStartMousePosition = [...game.mouse.position];
+            this.editingParameterStartValue = this.parameterValues[key];
+          }
         }
       }
+    }
+  }
+
+  onReleaseChild(key) {
+    if (this.editingParameter === key) {
+      this.editingParameter = null;
     }
   }
 
@@ -129,14 +147,32 @@ export default class Module extends Thing {
         return false;
       }
     }
+    
+    // Remove other conflicting connections
+    // Each output can only have one input
+    const oldModule = module.getPreviousModule(parameter);
+    if (oldModule) {
+      oldModule.removeConnection(module, parameter);
+    }
 
-    this.connections.push({ module, parameter })
+    this.connections.push({ module, parameter });
 
     return true;
   }
 
   update() {
     this.time++
+
+    // Manual parameter adjustment
+    if (this.editingParameter) {
+      const curPos = game.mouse.position;
+      const oldPos = this.editingStartMousePosition;
+
+      const paramDelta = ((oldPos[1] - curPos[1]) + (curPos[0] - oldPos[0])) / 120;
+
+      this.parameterValues[this.editingParameter] = u.clamp(this.editingParameterStartValue + paramDelta, 0, 1);
+
+    }
 
     // TODO: Rebuild audio graph
 
@@ -161,9 +197,10 @@ export default class Module extends Thing {
       if (this.clickables[parameter]?.isHighlighted) {
         sprite = 'jack_selected';
       }
-      if (!this.isChildClickable(parameter)) {
+      if (!this.isChildClickable(parameter) && game.globals.connectingModule) {
         sprite = 'jack_disabled';
       }
+
 
       drawSprite({
         sprite: game.assets.textures[sprite],

@@ -42,12 +42,23 @@ export default class Selector extends Thing {
     }
 
     // Active clickable
-    if (activeClickable && !activeClickable.isHidden && activeClickable.onClick) {
+    if (activeClickable && !activeClickable.isHidden) {
 
       // Left Click
       if (game.mouse.leftClick) {
-        activeClickable.onClick();
+        this.lastClicked = activeClickable;
+        if (activeClickable.onClick) {
+          activeClickable.onClick();
+        }
       }
     }
+
+    // Left Release
+    if (game.mouse.leftRelease && this.lastClicked) {
+        if (this.lastClicked.onRelease) {
+          this.lastClicked.onRelease();
+        }
+        this.lastClicked = null;
+      }
   }
 }

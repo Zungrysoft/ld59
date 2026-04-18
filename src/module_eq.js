@@ -5,6 +5,7 @@ import * as soundmanager from 'soundmanager'
 import Thing from 'thing'
 import { drawBackground, drawSprite, drawText } from './draw.js'
 import Module from './module.js'
+import { DISABLED_GREY, DISABLED_GREY_DARK } from './colors.js'
 
 export default class ModuleEQ extends Module {
   width = 96
@@ -49,6 +50,10 @@ export default class ModuleEQ extends Module {
     const EQ_WIDTH = 53;
     const EQ_HEIGHT = 14;
     for (let i = 0; i < EQ_WIDTH; i ++) {
+      if (this.parameterValues.bypass && i % 2 === 0) {
+        continue;
+      }
+
       const val = i / (EQ_WIDTH - 1);
       const output = this.eqDisplayCurve(val, this.parameterValues.frequency, this.parameterValues.width, this.parameterValues.gain);
 
@@ -60,9 +65,33 @@ export default class ModuleEQ extends Module {
         position: vec2.add(this.position, [x, y]),
         width: 1,
         height: 1,
-        color: [0, 0, 1],
-        depth: this.depth + 2,
+        color: this.parameterValues.bypass ? DISABLED_GREY_DARK : [0.2, 0.3, 1],
+        depth: this.depth + 3,
       })
+
+      if (!this.parameterValues.bypass && i % 2 === 0) {
+        if (y - EQ_Y > 0) {
+          drawSprite({
+            sprite: game.assets.textures.square,
+            position: vec2.add(this.position, [x, y]),
+            width: 1,
+            height: EQ_Y - y,
+            color: [0, 0.1, 0.5],
+            depth: this.depth + 2,
+          })
+        }
+        else if (y - EQ_Y < 0) {
+          drawSprite({
+            sprite: game.assets.textures.square,
+            position: vec2.add(this.position, [x, y + 1]),
+            width: 1,
+            height: EQ_Y - y,
+            color: [0, 0.1, 0.5],
+            depth: this.depth + 2,
+          })
+        }
+        
+      }
     }
   }
 
