@@ -1,0 +1,9 @@
+*.png~
+*.kra
+*.kra~
+*.log
+*.ico~
+node_modules
+package.json
+package-lock.json
+sounds/conversations/unused/*
