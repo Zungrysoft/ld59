@@ -17,7 +17,7 @@ export default class ModuleSpeakers extends Module {
       isSignal: true,
     },
   }
-  immoveable = true
+  isImmoveable = true
 
   constructor(nodeId, position) {
     super(nodeId, position);

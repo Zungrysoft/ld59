@@ -5,6 +5,11 @@ import * as soundmanager from 'soundmanager'
 import Thing from 'thing'
 import { drawBackground, drawSprite, drawText } from './draw.js'
 import Clickable from './clickable.js'
+import { aabbIou, rectToPolygonDistance } from './helpers.js'
+
+const REPEL_FORCE = 2.3;
+const FRICTION = 0.09;
+const BOUND_CORRECTION_FORCE = 0.02;
 
 export default class Module extends Thing {
   depth = 10
@@ -51,11 +56,26 @@ export default class Module extends Thing {
       this.outputHeight + 4,
     ];
     this.clickables['output'] = game.addThing(new Clickable(this, 'output', clickableAabb));
+
+    // Spawn clickable for dragging
+    if (!this.isImmoveable) {
+      const dragClickableAabb = [
+        this.width - 11,
+        0,
+        this.width,
+        16,
+      ];
+      this.clickables['drag'] = game.addThing(new Clickable(this, 'drag', dragClickableAabb, true));
+    }
   }
 
   isChildClickable(key) {
     if (this.editingParameter) {
       return false;
+    }
+
+    if (key === 'drag' && !game.globals.connectingModule) {
+      return true;
     }
 
     if (game.globals.connectingModule) {
@@ -80,7 +100,11 @@ export default class Module extends Thing {
   }
 
   onClickChild(key) {
-    if (key === 'output') {
+    if (key === 'drag') {
+      this.isBeingDragged = true;
+      this.dragDelta = vec2.subtract(game.mouse.position, this.position);
+    }
+    else if (key === 'output') {
       if (game.globals.connectingModule) {
         if (game.globals.connectingModule === this) {
           game.globals.connectingModule = null;
@@ -119,7 +143,10 @@ export default class Module extends Thing {
   }
 
   onReleaseChild(key) {
-    if (this.editingParameter === key) {
+    if (key === 'drag') {
+      this.isBeingDragged = false;
+    }
+    else if (this.editingParameter === key) {
       this.editingParameter = null;
     }
   }
@@ -194,9 +221,61 @@ export default class Module extends Thing {
       this.updateParameter(this.editingParameter, u.clamp(this.editingParameterStartValue + paramDelta, 0, 1));
     }
 
-    // TODO: Rebuild audio graph
+    // Dragging
+    const borderPolygon = [
+      [0, 0],
+      [game.getWidth(), 0],
+      [game.getWidth(), game.getHeight()],
+      [0, game.getHeight()],
+    ];
+    if (this.isBeingDragged) {
+      // Used to keep track of how far this word has moved this frame
+      const prevPosition = [...this.position]
 
-    // System
+      // Drag word to new location
+      if (game?.mouse?.position) {
+        this.position = vec2.lerp(this.position, vec2.subtract(game.mouse.position, this.dragDelta), 0.7)
+      }
+
+      // Constrain to boundary area
+      const [ distance, direction ] = rectToPolygonDistance(borderPolygon, this.getAabb());
+      if (distance > 0) {
+        this.position = vec2.add(this.position, vec2.scale(direction, distance));
+      }
+
+      // Set velocity from delta position in order to maintain inertia after release
+      this.velocity = vec2.subtract(this.position, prevPosition)
+    }
+    else if (!this.isImmoveable) {
+      // Constrain to boundary area (gently)
+      const [ distance, direction ] = rectToPolygonDistance(borderPolygon, this.getAabb());
+      if (distance > 0) {
+        this.velocity = vec2.add(this.velocity, vec2.scale(direction, distance * BOUND_CORRECTION_FORCE));
+      }
+
+      // Friction
+      this.velocity = vec2.scale(this.velocity, 1.0 - FRICTION)
+
+      // Repel from other modules to prevent overlapping
+      for (const other of game.getThings().filter(x => x instanceof Module && this !== x)) {
+        const overlap = aabbIou(
+          this.getAabb(),
+          other.getAabb(),
+        );
+
+        if (overlap > 0) {
+          const dir = vec2.normalize(vec2.subtract(this.position, other.position));
+          this.velocity = vec2.add(this.velocity, vec2.scale(dir, overlap * REPEL_FORCE));
+        }
+      }
+
+      // Move based on velocity
+      this.position = vec2.add(this.position, this.velocity)
+    }
+  }
+
+  getAabb() {
+    return [...this.position, ...vec2.add(this.position, [this.width, this.height])];
   }
 
   draw() {

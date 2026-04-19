@@ -9,7 +9,7 @@ import { drawBackground, drawSprite, drawText, getTextHeight } from './draw.js'
 export default class Clickable extends Thing {
   aabb = [0, 0, 0, 0]
 
-  constructor(parent, key, aabb) {
+  constructor(parent, key, aabb, noHoverSound) {
     super();
 
     this.parent = parent;
@@ -18,6 +18,7 @@ export default class Clickable extends Thing {
     if (aabb) {
       this.aabb = aabb;
     }
+    this.noHoverSound = noHoverSound;
   }
 
   onClick() {
