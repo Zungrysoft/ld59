@@ -24,15 +24,12 @@ ctx.fillText('(this may take a minute or so)', 16, game.getHeight() - 16)
 ctx.restore()
 
 let fontData = {};
-for (const char of "abcdefghijklmnopqrstuvwxyz") {
+for (const char of "abcdefghijklmnopqrstuvwxyz0123456789") {
   fontData["letter_" + char] = 'images/fontsmall/letter_small_' + char + '.png';
 }
-// for (const symbol of ['comma', 'period', 'exclamation_point', 'question_mark', 'colon', 'apostraphe']) {
-//   fontData["letter_symbol_" + symbol] = 'images/font/letter_symbol_' + symbol + '.png';
-// }
-// for (let i = 0; i < 10; i ++) {
-//   fontData["letter_number_" + i.toString()] = 'images/font/letter_number_' + i.toString() + '.png';
-// }
+for (const symbol of ['slash', 'question_mark']) {
+  fontData["letter_" + symbol] = 'images/fontsmall/letter_small_' + symbol + '.png';
+}
 
 game.assets.images = await game.loadImages({
   square: 'images/square.png',
@@ -57,6 +54,10 @@ game.assets.images = await game.loadImages({
   jack_disabled: 'images/ui/jack_disabled.png',
   jack_selected: 'images/ui/jack_selected.png',
   link: 'images/ui/link.png',
+
+  tape: 'images/ui/tape.png',
+  tape_label_1: 'images/ui/tape_label_1.png',
+  tape_label_2: 'images/ui/tape_label_2.png',
 
   transcribe: 'images/ui/transcribe.png',
   transcribe_close: 'images/ui/transcribe_close.png',

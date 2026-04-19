@@ -108,7 +108,7 @@ class PulloutTray extends HTMLElement {
         </div>
         <div class="column">
           <button class="button">Check Transcription</button>
-          <p class="text">dsdds</p>
+          <p class="text"></p>
         </div>
       </div>
     `;

@@ -2,7 +2,7 @@
     "test": {
         "tape": "testmusic",
         "volume": 0.8,
-        "title": "Test Cassette",
+        "title": "test 3/4/99?",
         "color_1": [0.68, 0.16, 0.4],
         "color_2": [0.38, 0.05, 0.2],
         "color_3": [0.95, 0.60, 0.43],

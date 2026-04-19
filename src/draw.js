@@ -77,15 +77,19 @@ export function drawText({
       continue
     }
 
-    let imgName = null;
+    let imgName = 'letter_' + char.toLowerCase();
 
     // if (char === '.') {
     //   imgName = 'letter_symbol_period';
     // }
 
-    // if (char === '?') {
-    //   imgName = 'letter_symbol_question_mark';
-    // }
+    if (char === '/') {
+      imgName = 'letter_slash';
+    }
+
+    if (char === '?') {
+      imgName = 'letter_question_mark';
+    }
 
     // if (char === '!') {
     //   imgName = 'letter_symbol_exclamation_point';
@@ -103,12 +107,7 @@ export function drawText({
     //   imgName = 'letter_symbol_apostraphe';
     // }
 
-    // if (char >= '0' && char <= '9') {
-    //   imgName = 'letter_number_' + char;
-    // }
-
-
-    imgName = 'letter_' + char.toLowerCase();
+    
 
     if (char && imgName) {
       const img = game.assets.textures[imgName];
