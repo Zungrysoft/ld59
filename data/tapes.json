@@ -1,6 +1,6 @@
 {
     "test": {
-        "file": "test",
+        "tape": "testmusic",
         "volume": 0.8,
         "title": "Test Cassette",
         "color_1": "AD2A67",

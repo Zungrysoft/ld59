@@ -19,8 +19,8 @@ export default class ModuleSpeakers extends Module {
   }
   immoveable = true
 
-  constructor(position) {
-    super(position);
+  constructor(nodeId, position) {
+    super(nodeId, position);
     game.setThingName(this, 'speakers')
 
     this.init();

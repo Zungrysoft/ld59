@@ -3,9 +3,11 @@ import * as webgl from 'webgl'
 import * as soundmanager from 'soundmanager'
 import Selector from './selector.js'
 import ModuleEQ from './module_eq.js'
-import AudioSystem from './audiosystem.js'
 import ModuleTapedeck from './module_tapedeck.js'
 import ModuleSpeakers from './module_speakers.js'
+import AudioGraphManager from './audiosystem.js'
+import Desk from './desk.js'
+
 
 document.title = 'Cut Through'
 game.setWidth(360)
@@ -64,8 +66,27 @@ game.assets.data = await game.loadJson({
 game.assets.sounds = await game.loadAudio({
   click: 'sounds/click.wav',
   plug_in: 'sounds/plug_in.wav',
+  switch1: 'sounds/switch.wav',
+  switch2: 'sounds/switch2.wav',
+  switch3: 'sounds/switch3.wav',
+  switchloud1: 'sounds/switchloud.wav',
+  switchloud2: 'sounds/switchloud2.wav',
+  switchloud3: 'sounds/switchloud3.wav',
+  switchloud4: 'sounds/switchloud4.wav',
+  unload1: 'sounds/unload.wav',
+  unload2: 'sounds/unload2.wav',
+  unload3: 'sounds/unload3.wav',
+  load: 'sounds/load.wav',
+  rewind: 'sounds/rewind.wav',
 })
 soundmanager.setSoundsTable(game.assets.sounds)
+
+const audioSystem = new AudioGraphManager();
+game.assets.tapes = await game.loadTapes(audioSystem.ctx, {
+  testmusic: 'sounds/tapes/testmusic.mp3',
+  testsound: 'sounds/load.wav',
+})
+console.log(game.assets.tapes)
 
 game.assets.textures = Object.fromEntries(
   Object.entries(game.assets.images).map(([name, image]) => [
@@ -76,12 +97,14 @@ game.assets.textures = Object.fromEntries(
 game.setScene(() => {
   // Global things
   game.addThing(new Selector());
-  game.addThing(new AudioSystem());
-  game.addThing(new ModuleEQ([170, 70]));
-  game.addThing(new ModuleTapedeck([20, 20]));
-  game.addThing(new ModuleSpeakers([game.getWidth() - 32 - 2, 2]));
+  game.addThing(new Desk());
+  game.addThing(new ModuleEQ('eq1', [170, 70]));
+  game.addThing(new ModuleTapedeck('audio1', [20, 20]));
+  game.addThing(new ModuleSpeakers('speaker', [game.getWidth() - 32 - 2, 2]));
 
   game.globals.soundWave = [0, 0, 0, 0, 0, 0, 0, 0]
+
+  game.globals.audioSystem = audioSystem;
 
   // Camera setup
   game.getCamera3D().lookVector = [0, 0, -1];

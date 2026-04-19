@@ -585,6 +585,18 @@ export async function loadAudio (locations) {
   return Object.fromEntries(audios)
 }
 
+export async function loadTapes (ctx, locations) {
+  let ret = {};
+  for (const key in locations) {
+    const url = locations[key];
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+    ret[key] = audioBuffer;
+  }
+  return ret;
+}
+
 /**
  * Given an object of [name, file path] pairs, load as plain text
  */

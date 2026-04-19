@@ -17,9 +17,10 @@ export default class Module extends Thing {
   parameters = {}
   connections = []
   
-  constructor(position = [100, 100]) {
+  constructor(nodeId, position = [100, 100]) {
     super();
 
+    this.nodeId = nodeId;
     this.position = position;
   }
 
@@ -53,6 +54,10 @@ export default class Module extends Thing {
   }
 
   isChildClickable(key) {
+    if (this.editingParameter) {
+      return false;
+    }
+
     if (game.globals.connectingModule) {
       if (game.globals.connectingModule === this) {
         if (key !== 'output') {
@@ -101,7 +106,7 @@ export default class Module extends Thing {
         else {
           // TODO: Manual parameter adjustment
           if (this.parameters[key].isBoolean) {
-            this.parameterValues[key] = !this.parameterValues[key];
+            this.updateParameter(key, !this.parameterValues[key])
           }
           else {
             this.editingParameter = key;
@@ -135,6 +140,10 @@ export default class Module extends Thing {
       const connection = this.connections[i];
       if (connection.module === module && connection.parameter === parameter) {
         this.connections.splice(i, 1);
+
+        // Rebuild audio graph
+        game.globals.audioSystem.rebuildGraph();
+
         return true;
       }
     }
@@ -157,11 +166,23 @@ export default class Module extends Thing {
 
     this.connections.push({ module, parameter });
 
+    // Rebuild audio graph
+    game.globals.audioSystem.rebuildGraph();
+
     return true;
   }
 
+  updateParameter(parameter, value) {
+    if (this.parameterValues[parameter] !== value) {
+      this.parameterValues[parameter] = value;
+
+      // Rebuild audio graph
+      game.globals.audioSystem.updateParameter(this.nodeId, parameter, value);
+    }
+  }
+
   update() {
-    this.time++
+    this.time ++;
 
     // Manual parameter adjustment
     if (this.editingParameter) {
@@ -170,8 +191,7 @@ export default class Module extends Thing {
 
       const paramDelta = ((oldPos[1] - curPos[1]) + (curPos[0] - oldPos[0])) / 120;
 
-      this.parameterValues[this.editingParameter] = u.clamp(this.editingParameterStartValue + paramDelta, 0, 1);
-
+      this.updateParameter(this.editingParameter, u.clamp(this.editingParameterStartValue + paramDelta, 0, 1));
     }
 
     // TODO: Rebuild audio graph
@@ -194,7 +214,7 @@ export default class Module extends Thing {
       const jackPos = [-7, this.parameters[parameter].inputHeight - 7];
 
       let sprite = 'jack';
-      if (this.clickables[parameter]?.isHighlighted) {
+      if (this.clickables[parameter]?.isHighlighted || this.editingParameter === parameter) {
         sprite = 'jack_selected';
       }
       if (!this.isChildClickable(parameter) && game.globals.connectingModule) {
@@ -219,7 +239,7 @@ export default class Module extends Thing {
       if (this.clickables['output']?.isHighlighted) {
         sprite = 'jack_selected';
       }
-      if (!this.isChildClickable('output')) {
+      if (!this.isChildClickable('output') && game.globals.connectingModule) {
         sprite = 'jack_disabled';
       }
 

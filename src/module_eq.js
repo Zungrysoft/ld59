@@ -6,6 +6,7 @@ import Thing from 'thing'
 import { drawBackground, drawSprite, drawText } from './draw.js'
 import Module from './module.js'
 import { DISABLED_GREY, DISABLED_GREY_DARK } from './colors.js'
+import { logFreq, normToFreq, scaleSigma } from './audiohelpers.js'
 
 export default class ModuleEQ extends Module {
   width = 96
@@ -35,8 +36,8 @@ export default class ModuleEQ extends Module {
     },
   }
 
-  constructor(position) {
-    super(position);
+  constructor(nodeId, position) {
+    super(nodeId, position);
 
     this.init();
   }
@@ -96,17 +97,6 @@ export default class ModuleEQ extends Module {
   }
 
   eqDisplayCurve(x, freq, width, gain) {
-    const MIN_FREQ = 20;
-    const MAX_FREQ = 20000;
-
-    function normToFreq(n) {
-      return MIN_FREQ * Math.pow(MAX_FREQ / MIN_FREQ, n);
-    }
-
-    function logFreq(f) {
-      return Math.log10(f);
-    }
-
     const f = normToFreq(x);
     const f0 = normToFreq(freq);
 
@@ -114,7 +104,7 @@ export default class ModuleEQ extends Module {
     const logF0 = logFreq(f0);
 
     const distance = logF - logF0;
-    const sigma = u.map(width, 0, 1, 0.05, 0.8);
+    const sigma = scaleSigma(width);
     const bell = Math.exp(-(distance * distance) / (2 * sigma * sigma));
     const scaledGain = (gain - 0.5) * 2;
 
