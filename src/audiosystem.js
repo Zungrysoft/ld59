@@ -31,6 +31,9 @@ export default class AudioGraphManager {
     this.playState = new Map();
     this.currentGraph = {};
 
+    // Tracks audio->control-rate modulation readers
+    this.modulationReaders = new Map();
+
     this._createCoreNodes();
   }
 
@@ -158,6 +161,14 @@ export default class AudioGraphManager {
   }
 
   _disconnectDynamicConnections() {
+    // Stop any audio->control readers
+    for (const reader of this.modulationReaders.values()) {
+      try { clearInterval(reader.intervalId); } catch {}
+      try { reader.analyser.disconnect(); } catch {}
+      try { reader.silentTap.disconnect(); } catch {}
+    }
+    this.modulationReaders.clear();
+
     for (const [key, node] of this.nodes.entries()) {
       if (node.type === "eq") {
         try { node.input.disconnect(); } catch {}
@@ -264,15 +275,106 @@ export default class AudioGraphManager {
       return;
     }
 
+    // For eq/osc parameters, convert audio-rate modulation into control-rate
+    // by measuring average loudness over ~1/60s windows.
+    if (this._isControlRateParamTarget(targetNode, paramName)) {
+      this._connectAudioRateSourceAsLoudnessControl(sourceOutput, targetNode, paramName, sourceKey, targetKey);
+      return;
+    }
+
     const audioParam = this._getTargetAudioParam(targetNode, paramName);
     if (audioParam) {
       sourceOutput.connect(audioParam);
       return;
     }
 
-    // Best-effort fallback for non-audio params:
-    // follow the source with an analyser/update loop if needed in future.
     console.warn(`Cannot modulate "${targetKey}.${paramName}" directly.`);
+  }
+
+  _isControlRateParamTarget(node, paramName) {
+    if (node.type === "eq") {
+      return paramName === "frequency" || paramName === "gain" || paramName === "width";
+    }
+
+    if (node.type === "oscillator") {
+      return paramName === "frequency" || paramName === "gain";
+    }
+
+    return false;
+  }
+
+  _connectAudioRateSourceAsLoudnessControl(sourceOutput, targetNode, paramName, sourceKey, targetKey) {
+    const analyser = this.ctx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0;
+
+    // Keep the analyser branch alive without making it audible
+    const silentTap = this.ctx.createGain();
+    silentTap.gain.value = 0;
+
+    sourceOutput.connect(analyser);
+    analyser.connect(silentTap);
+    silentTap.connect(this.ctx.destination);
+
+    const sampleBuffer = new Float32Array(analyser.fftSize);
+    const intervalMs = 1000 / 60;
+    const readerId = `${sourceKey}->${targetKey}.${paramName}`;
+
+    const tick = () => {
+      analyser.getFloatTimeDomainData(sampleBuffer);
+
+      let sum = 0;
+      for (let i = 0; i < sampleBuffer.length; i++) {
+        sum += Math.abs(sampleBuffer[i]);
+      }
+
+      const loudness = Math.min(1, Math.max(0, sum / sampleBuffer.length));
+      this._setNormalizedTargetParam(targetNode, paramName, loudness);
+    };
+
+    const intervalId = window.setInterval(tick, intervalMs);
+
+    this.modulationReaders.set(readerId, {
+      analyser,
+      silentTap,
+      intervalId
+    });
+  }
+
+  _setNormalizedTargetParam(node, paramName, normalizedValue) {
+    const now = this.ctx.currentTime;
+    const value = Math.min(1, Math.max(0, normalizedValue));
+
+    if (node.type === "eq") {
+      if (paramName === "width") {
+        const q = 0.33 / scaleSigma(value);
+        node.filter.Q.setTargetAtTime(q, now, 0.01);
+        return;
+      }
+
+      if (paramName === "frequency") {
+        const freq = normToFreq(value);
+        node.filter.frequency.setTargetAtTime(freq, now, 0.01);
+        return;
+      }
+
+      if (paramName === "gain") {
+        const gain = u.map(value, 0, 1, -25, 25);
+        node.filter.gain.setTargetAtTime(gain, now, 0.01);
+        return;
+      }
+    }
+
+    if (node.type === "oscillator") {
+      if (paramName === "frequency") {
+        node.node.frequency.setTargetAtTime(value, now, 0.01);
+        return;
+      }
+
+      if (paramName === "gain") {
+        node.output.gain.setTargetAtTime(value, now, 0.01);
+      }
+    }
   }
 
   _getNodeInput(node) {
