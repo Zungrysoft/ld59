@@ -57,6 +57,7 @@ export default class AudioGraphManager {
 
     // Sine oscillator
     this.nodes.set("sine1", this._createOscillatorNode());
+    this.nodes.set("sine2", this._createOscillatorNode());
 
     // EQs
     this.nodes.set("eq1", this._createEQNode());
@@ -289,6 +290,10 @@ export default class AudioGraphManager {
       if (typeof config.gain === "number") {
         node.output.gain.setValueAtTime(config.gain, now);
       }
+      if (typeof config.isSquare === 'boolean') {
+        const oscType = config.isSquare ? 'square' : 'sine';
+        node.node.type = oscType;
+      }
       return;
     }
 
@@ -373,24 +378,24 @@ export default class AudioGraphManager {
     const intervalMs = 1000 / 60;
     const readerId = `${sourceKey}->${targetKey}.${paramName}`;
 
-    const tick = () => {
-      analyser.getFloatTimeDomainData(sampleBuffer);
+    const reader = {
+      analyser,
+      lastValue: 0,
+      intervalId: window.setInterval(() => {
+        analyser.getFloatTimeDomainData(sampleBuffer);
 
-      let sum = 0;
-      for (let i = 0; i < sampleBuffer.length; i++) {
-        sum += Math.abs(sampleBuffer[i]);
-      }
+        let sum = 0;
+        for (let i = 0; i < sampleBuffer.length; i++) {
+          sum += Math.abs(sampleBuffer[i]);
+        }
 
-      const loudness = Math.min(1, Math.max(0, (sum / sampleBuffer.length) * 3.2));
-      this._setNormalizedTargetParam(targetNode, paramName, loudness);
+        const loudness = Math.min(1, Math.max(0, (sum / sampleBuffer.length) * 3.2));
+        reader.lastValue = loudness;
+        this._setNormalizedTargetParam(targetNode, paramName, loudness);
+      }, intervalMs)
     };
 
-    const intervalId = window.setInterval(tick, intervalMs);
-
-    this.modulationReaders.set(readerId, {
-      analyser,
-      intervalId
-    });
+    this.modulationReaders.set(readerId, reader);
   }
 
   _connectAudioRateSourceAsDirectControl(sourceOutput, targetNode, paramName, sourceKey, targetKey) {
@@ -404,24 +409,19 @@ export default class AudioGraphManager {
     const intervalMs = 1000 / 60;
     const readerId = `${sourceKey}->${targetKey}.${paramName}`;
 
-    const tick = () => {
-      analyser.getFloatTimeDomainData(sampleBuffer);
-
-      // Use one waveform sample directly
-      const raw = sampleBuffer[0];
-
-      // Convert from [-1, 1] to [0, 1]
-      const normalized = u.map(raw, -1, 1, 0, 1)
-
-      this._setNormalizedTargetParam(targetNode, paramName, normalized);
+    const reader = {
+      analyser,
+      lastValue: 0,
+      intervalId: window.setInterval(() => {
+        analyser.getFloatTimeDomainData(sampleBuffer);
+        const raw = sampleBuffer[0];
+        const normalized = u.map(raw, -1, 1, 0, 1);
+        reader.lastValue = normalized;
+        this._setNormalizedTargetParam(targetNode, paramName, normalized);
+      }, intervalMs)
     };
 
-    const intervalId = window.setInterval(tick, intervalMs);
-
-    this.modulationReaders.set(readerId, {
-      analyser,
-      intervalId
-    });
+    this.modulationReaders.set(readerId, reader);
   }
 
   _setNormalizedTargetParam(node, paramName, normalizedValue) {
@@ -457,6 +457,11 @@ export default class AudioGraphManager {
       if (paramName === "gain") {
         node.output.gain.setTargetAtTime(value, now, 0.01);
       }
+
+      if (paramName === 'isSquare') {
+        const oscType = value ? 'square' : 'sine';
+        node.node.type = oscType;
+      }
     }
   }
 
@@ -464,10 +469,9 @@ export default class AudioGraphManager {
     const controllerKey = this.paramControllers.get(`${nodeKey}.${paramName}`);
     if (!controllerKey) return null;
 
-    const observer = this.nodeObservers.get(controllerKey);
-    if (!observer) return null;
-
-    return observer.lastValue;
+    const readerId = `${controllerKey}->${nodeKey}.${paramName}`;
+    const reader = this.modulationReaders.get(readerId);
+    return reader ? reader.lastValue : null;
   }
 
   _getNodeInput(node) {

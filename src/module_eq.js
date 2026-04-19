@@ -67,6 +67,13 @@ export default class ModuleEQ extends Module {
       const x = EQ_X + i;
       const y = EQ_Y + Math.round(EQ_HEIGHT * (u.clamp(output, 0, 1) * -2 + 1));
 
+      drawText({
+        text: this.parameterValues.bypass ? 'bypass' : 'on',
+        color: DISABLED_GREY,
+        position: vec2.add(this.position, [6, 45]),
+        depth: this.depth + 2,
+      })
+
       drawSprite({
         sprite: game.assets.textures.square,
         position: vec2.add(this.position, [x, y]),

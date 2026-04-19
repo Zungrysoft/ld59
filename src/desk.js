@@ -17,7 +17,9 @@ export default class Desk extends Thing {
 
     if (game.keysPressed.KeyJ) {
       
-      game.globals.audioSystem.playSound(game.assets.tapes['testmusic'], 'audio1')
+      const tray = document.getElementById("tray");
+
+      tray.toggleTray();
     }
   }
 

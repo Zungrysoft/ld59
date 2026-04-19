@@ -102,6 +102,7 @@ game.setScene(() => {
   game.addThing(new Desk());
   game.addThing(new ModuleEQ('eq1', [170, 70]));
   game.addThing(new ModuleOscillator('sine1', [170, 170]));
+  game.addThing(new ModuleOscillator('sine2', [170, 160]));
   game.addThing(new ModuleTapedeck('audio1', [20, 20]));
   game.addThing(new ModuleSpeakers('speaker', [game.getWidth() - 32 - 2, 2]));
 
