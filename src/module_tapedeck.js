@@ -8,6 +8,8 @@ import Module from './module.js'
 import Clickable from './clickable.js'
 import { DISABLED_GREY, HIGHLIGHT_YELLOW } from './colors.js'
 
+const REWIND_SPEED_MULTIPLIER = 6;
+
 export default class ModuleTapedeck extends Module {
   width = 96
   height = 46
@@ -18,7 +20,7 @@ export default class ModuleTapedeck extends Module {
   loadedTape = null
   isPlaying = false
   loadTime = 0
-  restartTime = 0
+  isRewinding = false
   isAtStartOfTape = true
   isAtEndOfTape = false
 
@@ -32,11 +34,17 @@ export default class ModuleTapedeck extends Module {
     super.update();
 
     this.loadTime --;
-    this.restartTime --;
-
-    if (this.restartTime === 0) {
-      soundmanager.playSound(['switchloud4'], 1.0, [0.9, 1.0]);
-      game.assets.sounds.rewind.pause();
+    
+    if (this.isRewinding) {
+      const offset = game.globals.audioSystem?.playState?.get(this.nodeId)?.offset;
+      if (offset <= REWIND_SPEED_MULTIPLIER / 60) {
+        game.globals.audioSystem.playState.get(this.nodeId).offset = 0;
+        this.isAtStartOfTape = true;
+        this.endRewind();
+      }
+      else {
+        game.globals.audioSystem.playState.get(this.nodeId).offset -= REWIND_SPEED_MULTIPLIER / 60;
+      }
     }
 
     // Check for song ended
@@ -50,33 +58,39 @@ export default class ModuleTapedeck extends Module {
     }
   }
 
+  endRewind() {
+    this.isRewinding = false;
+    soundmanager.playSound(['switchloud4'], 1.0, [0.9, 1.0]);
+    game.assets.sounds.rewind.pause();
+  }
+
   init() {
     super.init();
 
     // Spawn button clickables
     this.clickables['play'] = game.addThing(new Clickable(this, 'play', [28, 16, 49, 32]));
-    this.clickables['restart'] = game.addThing(new Clickable(this, 'restart', [9, 16, 25, 32]));
+    this.clickables['rewind'] = game.addThing(new Clickable(this, 'rewind', [9, 16, 25, 32]));
     this.clickables['load'] = game.addThing(new Clickable(this, 'load', [52, 16, 65, 32]));
   }
 
   isPlayEnabled() {
-    return !game.globals.isConnecting && this.loadedTape && this.loadTime <= 0 && this.restartTime <= 0 && !this.isAtEndOfTape;
+    return !game.globals.connectingModule && this.loadedTape && this.loadTime <= 0 && !this.isAtEndOfTape;
   }
 
   isLoadEnabled() {
-    return !game.globals.isConnecting && !this.isPlaying && this.loadTime <= 0 && this.restartTime <= 0;
+    return !game.globals.connectingModule && !this.isPlaying && this.loadTime <= 0 && !this.isRewinding;
   }
 
-  isRestartEnabled() {
-    return !game.globals.isConnecting && this.loadedTape && this.loadTime <= 0 && this.restartTime <= 0 && !this.isAtStartOfTape;
+  isRewindEnabled() {
+    return !game.globals.connectingModule && this.loadedTape && this.loadTime <= 0 && !this.isAtStartOfTape;
   }
 
   isChildClickable(key) {
     if (key === 'play') {
       return this.isPlayEnabled();
     }
-    if (key === 'restart') {
-      return this.isRestartEnabled();
+    if (key === 'rewind') {
+      return this.isRewindEnabled();
     }
     if (key === 'load') {
       return this.isLoadEnabled();
@@ -97,6 +111,7 @@ export default class ModuleTapedeck extends Module {
       else {
         soundmanager.playSound(['switch2'], 1.0, [0.9, 1.1]);
         this.isPlaying = true;
+        this.isRewinding = false;
         this.isAtStartOfTape = false;
         if (game.globals.audioSystem) {
           const tape = game.assets.data.tapes[this.loadedTape].tape;
@@ -104,24 +119,21 @@ export default class ModuleTapedeck extends Module {
         }
       }
     }
-    else if (key === 'restart') {
+    else if (key === 'rewind') {
       if (game.globals.audioSystem) {
         game.globals.audioSystem.pause(this.nodeId);
-        this.restartTime = Math.floor(u.map(game.globals.audioSystem.playState.get(this.nodeId).offset, 0, 45, 10, 240, true));
-        if (this.isAtEndOfTape) {
-          this.restartTime = 240;
-        }
-        game.globals.audioSystem.reset(this.nodeId);
+      }
+
+      if (this.isRewinding) {
+        this.endRewind();
       }
       else {
-        this.restartTime = 30;
+        this.isRewinding = true;
+        this.isPlaying = false;
+        soundmanager.playSound(['switchloud3'], 1.0, [0.9, 1.1]);
+        soundmanager.playSound(['rewind'], 1.0, 1.0);
+        this.isAtEndOfTape = false;
       }
-      
-      this.isPlaying = false;
-      this.isAtStartOfTape = true;
-      soundmanager.playSound(['switchloud3'], 1.0, [0.9, 1.1]);
-      soundmanager.playSound(['rewind'], 1.0, 1.0);
-      this.isAtEndOfTape = false;
     }
     else if (key === 'load') {
       this.loadTime = 85;
@@ -139,21 +151,21 @@ export default class ModuleTapedeck extends Module {
   draw() {
     super.draw();
 
-    // Restart Button
-    let restartSprite = 'restart';
-    if (this.restartTime > 0) {
-      restartSprite = 'restart_depressed';
+    // Rewind Button
+    let rewindSprite = 'rewind';
+    if (this.isRewinding) {
+      rewindSprite = 'rewind_depressed';
     }
-    let restartColor = [1.0, 1.0, 1.0];
-    if (this.clickables['restart'].isHighlighted) {
-      restartColor = HIGHLIGHT_YELLOW;
+    let rewindColor = [1.0, 1.0, 1.0];
+    if (this.clickables['rewind'].isHighlighted) {
+      rewindColor = HIGHLIGHT_YELLOW;
     }
-    if (!this.isRestartEnabled()) {
-      restartColor = DISABLED_GREY;
+    if (!this.isRewindEnabled()) {
+      rewindColor = DISABLED_GREY;
     }
     drawSprite({
-      sprite: game.assets.textures['module_tapedeck_button_' + restartSprite],
-      color: restartColor,
+      sprite: game.assets.textures['module_tapedeck_button_' + rewindSprite],
+      color: rewindColor,
       position: this.position,
       width: 128,
       height: 128,

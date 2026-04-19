@@ -39,8 +39,8 @@ game.assets.images = await game.loadImages({
   module_speakers: 'images/module/speakers.png',
   module_oscillator: 'images/module/oscillator.png',
 
-  module_tapedeck_button_restart: 'images/module/tapedeck_button_restart.png',
-  module_tapedeck_button_restart_depressed: 'images/module/tapedeck_button_restart_depressed.png',
+  module_tapedeck_button_rewind: 'images/module/tapedeck_button_rewind.png',
+  module_tapedeck_button_rewind_depressed: 'images/module/tapedeck_button_rewind_depressed.png',
   module_tapedeck_button_play: 'images/module/tapedeck_button_play.png',
   module_tapedeck_button_play_depressed: 'images/module/tapedeck_button_play_depressed.png',
   module_tapedeck_button_pause: 'images/module/tapedeck_button_pause.png',

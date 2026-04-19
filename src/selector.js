@@ -25,7 +25,7 @@ export default class Selector extends Thing {
     }
     if (!activeClickable) {
       for (const clickable of clickables) {
-        if (u.pointInsideAabb(...game.mouse.position, clickable.getAabb()) && !clickable.isDying) {
+        if (u.pointInsideAabb(...game.mouse.position, clickable.getAabb()) && !vec2.equals(game.mouse.position, [0, 0]) && !clickable.isDying) {
           activeClickable = clickable;
           break;
         }
