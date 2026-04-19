@@ -68,53 +68,47 @@ export function drawText({
   for (const char of text) {
     if (char === '\n') {
       translate[0] = 0;
-      translate[1] += 32;
+      translate[1] += 7;
       continue
     }
 
     if (char === ' ') {
-      translate[0] += 28;
+      translate[0] += 2;
       continue
     }
 
     let imgName = null;
 
-    if (char === '.') {
-      imgName = 'letter_symbol_period';
-    }
+    // if (char === '.') {
+    //   imgName = 'letter_symbol_period';
+    // }
 
-    if (char === '?') {
-      imgName = 'letter_symbol_question_mark';
-    }
+    // if (char === '?') {
+    //   imgName = 'letter_symbol_question_mark';
+    // }
 
-    if (char === '!') {
-      imgName = 'letter_symbol_exclamation_point';
-    }
+    // if (char === '!') {
+    //   imgName = 'letter_symbol_exclamation_point';
+    // }
 
-    if (char === ',') {
-      imgName = 'letter_symbol_comma';
-    }
+    // if (char === ',') {
+    //   imgName = 'letter_symbol_comma';
+    // }
 
-    if (char === ':') {
-      imgName = 'letter_symbol_colon';
-    }
+    // if (char === ':') {
+    //   imgName = 'letter_symbol_colon';
+    // }
 
-    if (char === "'") {
-      imgName = 'letter_symbol_apostraphe';
-    }
+    // if (char === "'") {
+    //   imgName = 'letter_symbol_apostraphe';
+    // }
 
-    if (char >= '0' && char <= '9') {
-      imgName = 'letter_number_' + char;
-    }
+    // if (char >= '0' && char <= '9') {
+    //   imgName = 'letter_number_' + char;
+    // }
 
-    const isUpperCase = char === char.toUpperCase() && char !== char.toLowerCase();
-    const isLowerCase = char === char.toLowerCase() && char !== char.toUpperCase();
-    if (isUpperCase) {
-      imgName = 'letter_upper_' + char.toLowerCase();
-    }
-    if (isLowerCase) {
-      imgName = 'letter_lower_' + char.toLowerCase();
-    }
+
+    imgName = 'letter_' + char.toLowerCase();
 
     if (char && imgName) {
       const img = game.assets.textures[imgName];
@@ -124,11 +118,20 @@ export function drawText({
         color: color,
         alpha: alpha,
         stripsAnimationState: stripsAnimationState,
-        width: 32 * scale,
-        height: 32 * scale,
+        width: 8 * scale,
+        height: 8 * scale,
         depth: depth,
       });
-      translate[0] += 20;
+
+      if (['m', 'w'].includes(char.toLowerCase())) {
+        translate[0] += 6;
+      }
+      else if (['i'].includes(char.toLowerCase())) {
+        translate[0] += 2;
+      }
+      else {
+        translate[0] += 4;
+      }
     }
     
   }

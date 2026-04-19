@@ -24,15 +24,14 @@ ctx.restore()
 
 let fontData = {};
 for (const char of "abcdefghijklmnopqrstuvwxyz") {
-  fontData["letter_lower_" + char] = 'images/font/letter_lower_' + char + '.png';
-  fontData["letter_upper_" + char] = 'images/font/letter_upper_' + char + '.png';
+  fontData["letter_" + char] = 'images/fontsmall/letter_small_' + char + '.png';
 }
-for (const symbol of ['comma', 'period', 'exclamation_point', 'question_mark', 'colon', 'apostraphe']) {
-  fontData["letter_symbol_" + symbol] = 'images/font/letter_symbol_' + symbol + '.png';
-}
-for (let i = 0; i < 10; i ++) {
-  fontData["letter_number_" + i.toString()] = 'images/font/letter_number_' + i.toString() + '.png';
-}
+// for (const symbol of ['comma', 'period', 'exclamation_point', 'question_mark', 'colon', 'apostraphe']) {
+//   fontData["letter_symbol_" + symbol] = 'images/font/letter_symbol_' + symbol + '.png';
+// }
+// for (let i = 0; i < 10; i ++) {
+//   fontData["letter_number_" + i.toString()] = 'images/font/letter_number_' + i.toString() + '.png';
+// }
 
 game.assets.images = await game.loadImages({
   square: 'images/square.png',
@@ -49,6 +48,8 @@ game.assets.images = await game.loadImages({
   module_tapedeck_button_pause_depressed: 'images/module/tapedeck_button_pause_depressed.png',
   module_tapedeck_button_load: 'images/module/tapedeck_button_load.png',
   module_tapedeck_button_load_depressed: 'images/module/tapedeck_button_load_depressed.png',
+  module_tapedeck_label_1: 'images/module/tapedeck_label_1.png',
+  module_tapedeck_label_2: 'images/module/tapedeck_label_2.png',
 
   jack: 'images/ui/jack.png',
   jack_disabled: 'images/ui/jack_disabled.png',

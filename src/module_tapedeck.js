@@ -110,7 +110,7 @@ export default class ModuleTapedeck extends Module {
     else if (key === 'restart') {
       if (game.globals.audioSystem) {
         game.globals.audioSystem.pause(this.nodeId);
-        this.restartTime = Math.floor(u.map(game.globals.audioSystem.playState.get(this.nodeId).offset, 0, 5, 25, 240, true));
+        this.restartTime = Math.floor(u.map(game.globals.audioSystem.playState.get(this.nodeId).offset, 0, 45, 25, 240, true));
         if (this.isAtEndOfTape) {
           this.restartTime = 240;
         }
@@ -129,6 +129,7 @@ export default class ModuleTapedeck extends Module {
     else if (key === 'load') {
       this.loadTime = 85;
       this.loadedTape = 'test';
+      game.globals.audioSystem.reset(this.nodeId);
       soundmanager.playSound('load', 1.0, [0.9, 1.1]);
       this.isAtEndOfTape = false;
       this.isAtStartOfTape = true;
@@ -203,5 +204,31 @@ export default class ModuleTapedeck extends Module {
       height: 128,
       depth: this.depth + 1,
     })
+
+    // Label
+    if (this.loadedTape && this.loadTime <= 0) {
+      drawSprite({
+        sprite: game.assets.textures.module_tapedeck_label_1,
+        color: game.assets.data.tapes[this.loadedTape].color_1,
+        position: this.position,
+        width: 128,
+        height: 128,
+        depth: this.depth + 1,
+      })
+      drawSprite({
+        sprite: game.assets.textures.module_tapedeck_label_2,
+        color: game.assets.data.tapes[this.loadedTape].color_2,
+        position: this.position,
+        width: 128,
+        height: 128,
+        depth: this.depth + 1,
+      })
+      drawText({
+        text:  game.assets.data.tapes[this.loadedTape].title,
+        color: game.assets.data.tapes[this.loadedTape].color_3,
+        position: vec2.add(this.position, [7, 35]),
+        depth: this.depth + 2,
+      })
+    }
   }
 }

@@ -3,9 +3,9 @@
         "tape": "testmusic",
         "volume": 0.8,
         "title": "Test Cassette",
-        "color_1": "AD2A67",
-        "color_2": "7B254D",
-        "color_3": "DE6933",
+        "color_1": [0.68, 0.16, 0.4],
+        "color_2": [0.38, 0.05, 0.2],
+        "color_3": [0.95, 0.60, 0.43],
         "points_to_unlock": 0,
         "transcriptions": [
             "and so it came to pass that it was good",
