@@ -42,9 +42,6 @@ export default class ModuleTapedeck extends Module {
     // Check for song ended
     if (this.isPlaying) {
       const playState = game.globals.audioSystem?.playState?.get(this.nodeId);
-      if (playState) {
-        console.log(playState?.offset)
-      }
       if (playState && (!playState.playing)) {
         soundmanager.playSound(['switchloud1', 'switchloud2'], 1.0, [0.9, 1.1]);
         this.isPlaying = false;
@@ -110,7 +107,7 @@ export default class ModuleTapedeck extends Module {
     else if (key === 'restart') {
       if (game.globals.audioSystem) {
         game.globals.audioSystem.pause(this.nodeId);
-        this.restartTime = Math.floor(u.map(game.globals.audioSystem.playState.get(this.nodeId).offset, 0, 45, 25, 240, true));
+        this.restartTime = Math.floor(u.map(game.globals.audioSystem.playState.get(this.nodeId).offset, 0, 45, 10, 240, true));
         if (this.isAtEndOfTape) {
           this.restartTime = 240;
         }

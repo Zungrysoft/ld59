@@ -87,7 +87,6 @@ game.assets.tapes = await game.loadTapes(audioSystem.ctx, {
   testmusic: 'sounds/tapes/testmusic.mp3',
   testsound: 'sounds/load.wav',
 })
-console.log(game.assets.tapes)
 
 game.assets.textures = Object.fromEntries(
   Object.entries(game.assets.images).map(([name, image]) => [
