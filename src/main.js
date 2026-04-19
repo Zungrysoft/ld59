@@ -7,6 +7,7 @@ import ModuleTapedeck from './module_tapedeck.js'
 import ModuleSpeakers from './module_speakers.js'
 import AudioGraphManager from './audiosystem.js'
 import Desk from './desk.js'
+import ModuleOscillator from './module_oscillator.js'
 
 
 document.title = 'Cut Through'
@@ -39,6 +40,7 @@ game.assets.images = await game.loadImages({
   module_eq: 'images/module/eq.png',
   module_tapedeck: 'images/module/tapedeck.png',
   module_speakers: 'images/module/speakers.png',
+  module_oscillator: 'images/module/oscillator.png',
 
   module_tapedeck_button_restart: 'images/module/tapedeck_button_restart.png',
   module_tapedeck_button_restart_depressed: 'images/module/tapedeck_button_restart_depressed.png',
@@ -99,6 +101,7 @@ game.setScene(() => {
   game.addThing(new Selector());
   game.addThing(new Desk());
   game.addThing(new ModuleEQ('eq1', [170, 70]));
+  game.addThing(new ModuleOscillator('sine1', [170, 170]));
   game.addThing(new ModuleTapedeck('audio1', [20, 20]));
   game.addThing(new ModuleSpeakers('speaker', [game.getWidth() - 32 - 2, 2]));
 

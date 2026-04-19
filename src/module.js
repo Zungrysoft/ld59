@@ -8,7 +8,7 @@ import Clickable from './clickable.js'
 import { aabbIou, rectToPolygonDistance } from './helpers.js'
 
 const REPEL_FORCE = 2.3;
-const FRICTION = 0.09;
+const FRICTION = 0.2;
 const BOUND_CORRECTION_FORCE = 0.02;
 
 export default class Module extends Thing {
@@ -49,13 +49,15 @@ export default class Module extends Thing {
     }
 
     // Spawn clickable for output jack
-    const clickableAabb = [
-      this.width - 4,
-      this.outputHeight - 3,
-      this.width + 3,
-      this.outputHeight + 4,
-    ];
-    this.clickables['output'] = game.addThing(new Clickable(this, 'output', clickableAabb));
+    if (this.outputHeight != null) {
+      const clickableAabb = [
+        this.width - 4,
+        this.outputHeight - 3,
+        this.width + 3,
+        this.outputHeight + 4,
+      ];
+      this.clickables['output'] = game.addThing(new Clickable(this, 'output', clickableAabb));
+    }
 
     // Spawn clickable for dragging
     if (!this.isImmoveable) {
@@ -283,7 +285,7 @@ export default class Module extends Thing {
 
         if (overlap > 0) {
           const dir = vec2.normalize(vec2.subtract(this.position, other.position));
-          this.velocity = vec2.add(this.velocity, vec2.scale(dir, overlap * REPEL_FORCE));
+          this.velocity = vec2.add(this.velocity, vec2.scale(dir, u.map(overlap, 0, 1, REPEL_FORCE * 0.2, REPEL_FORCE)));
         }
       }
 

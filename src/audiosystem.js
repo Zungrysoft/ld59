@@ -1,6 +1,6 @@
 import * as game from 'game'
 import * as u from 'utils'
-import { normToFreq, scaleSigma } from './audiohelpers.js';
+import { normToFreq, normToFreq2, scaleSigma } from './audiohelpers.js';
 
 function buildGraph() {
   let graph = {};
@@ -139,22 +139,14 @@ export default class AudioGraphManager {
   _createEQNode() {
     const input = this.ctx.createGain();
     const filter = this.ctx.createBiquadFilter();
-    const bypassGain = this.ctx.createGain();
     const output = this.ctx.createGain();
 
     filter.type = "peaking";
 
-    // Two possible paths:
-    // input -> filter -> output
-    // input -> bypassGain -> output
     input.connect(filter);
     filter.connect(output);
 
-    input.connect(bypassGain);
-    bypassGain.connect(output);
-
-    // Default: filter active, bypass muted
-    bypassGain.gain.value = 0;
+    input.connect(output);
 
     output.connect(this.keepAlive);
 
@@ -162,7 +154,6 @@ export default class AudioGraphManager {
       type: "eq",
       input,
       filter,
-      bypassGain,
       output,
       modulationMixers: new Map()
     };
@@ -224,13 +215,10 @@ export default class AudioGraphManager {
       if (node.type === "eq") {
         try { node.input.disconnect(); } catch {}
         try { node.filter.disconnect(); } catch {}
-        try { node.bypassGain.disconnect(); } catch {}
         try { node.output.disconnect(); } catch {}
 
         node.input.connect(node.filter);
         node.filter.connect(node.output);
-        node.input.connect(node.bypassGain);
-        node.bypassGain.connect(node.output);
 
         // Restore permanent keepalive connection
         node.output.connect(this.keepAlive);
@@ -279,8 +267,6 @@ export default class AudioGraphManager {
         node.filter.Q.setValueAtTime(1, this.ctx.currentTime);
         node.filter.frequency.setValueAtTime(1000, this.ctx.currentTime);
         node.filter.gain.setValueAtTime(0, this.ctx.currentTime);
-
-        node.bypassGain.gain.setValueAtTime(0, this.ctx.currentTime);
       }
     }
   }
@@ -297,16 +283,11 @@ export default class AudioGraphManager {
 
     if (node.type === "oscillator") {
       if (typeof config.frequency === "number") {
-        node.node.frequency.setValueAtTime(config.frequency, now);
+        const freq = normToFreq2(config.frequency);
+        node.node.frequency.setValueAtTime(freq, now);
       }
       if (typeof config.gain === "number") {
         node.output.gain.setValueAtTime(config.gain, now);
-      }
-      if (typeof config.isPlaying === "boolean") {
-        node.isPlaying = config.isPlaying;
-        if (!config.isPlaying) {
-          node.output.gain.setValueAtTime(0, now);
-        }
       }
       return;
     }
@@ -321,13 +302,11 @@ export default class AudioGraphManager {
         node.filter.frequency.setValueAtTime(freq, now);
       }
       if (typeof config.gain === "number") {
-        const gain = u.map(config.gain, 0, 1, -25, 25);
+        let gain = u.map(config.gain, 0, 1, -25, 25);
+        if (config.bypass) {
+          gain = 0;
+        }
         node.filter.gain.setValueAtTime(gain, now);
-      }
-      if (config.bypass === true) {
-        node.bypassGain.gain.setValueAtTime(1, now);
-      } else {
-        node.bypassGain.gain.setValueAtTime(0, now);
       }
     }
   }
@@ -350,13 +329,20 @@ export default class AudioGraphManager {
     // For eq/osc parameters, convert audio-rate modulation into control-rate
     // by measuring average loudness over ~1/60s windows.
     if (this._isControlRateParamTarget(targetNode, paramName)) {
-      this._connectAudioRateSourceAsLoudnessControl(sourceOutput, targetNode, paramName, sourceKey, targetKey);
+      if (sourceKey.includes('sine')) {
+        this._connectAudioRateSourceAsDirectControl(sourceOutput, targetNode, paramName, sourceKey, targetKey);
+      }
+      else {
+        this._connectAudioRateSourceAsLoudnessControl(sourceOutput, targetNode, paramName, sourceKey, targetKey);
+      }
+      
       this.paramControllers.set(`${targetKey}.${paramName}`, sourceKey);
       return;
     }
 
     const audioParam = this._getTargetAudioParam(targetNode, paramName);
     if (audioParam) {
+      console.log("Connected")
       sourceOutput.connect(audioParam);
       return;
     }
@@ -395,8 +381,39 @@ export default class AudioGraphManager {
         sum += Math.abs(sampleBuffer[i]);
       }
 
-      const loudness = Math.min(1, Math.max(0, sum / sampleBuffer.length));
+      const loudness = Math.min(1, Math.max(0, (sum / sampleBuffer.length) * 3.2));
       this._setNormalizedTargetParam(targetNode, paramName, loudness);
+    };
+
+    const intervalId = window.setInterval(tick, intervalMs);
+
+    this.modulationReaders.set(readerId, {
+      analyser,
+      intervalId
+    });
+  }
+
+  _connectAudioRateSourceAsDirectControl(sourceOutput, targetNode, paramName, sourceKey, targetKey) {
+    const analyser = this.ctx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0;
+
+    sourceOutput.connect(analyser);
+
+    const sampleBuffer = new Float32Array(analyser.fftSize);
+    const intervalMs = 1000 / 60;
+    const readerId = `${sourceKey}->${targetKey}.${paramName}`;
+
+    const tick = () => {
+      analyser.getFloatTimeDomainData(sampleBuffer);
+
+      // Use one waveform sample directly
+      const raw = sampleBuffer[0];
+
+      // Convert from [-1, 1] to [0, 1]
+      const normalized = u.map(raw, -1, 1, 0, 1)
+
+      this._setNormalizedTargetParam(targetNode, paramName, normalized);
     };
 
     const intervalId = window.setInterval(tick, intervalMs);
