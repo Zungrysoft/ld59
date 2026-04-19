@@ -243,10 +243,12 @@ export default class Module extends Thing {
 
     // Dragging
     const borderPolygon = [
-      [0, 0],
+      [24, 0],
       [game.getWidth(), 0],
       [game.getWidth(), game.getHeight()],
       [0, game.getHeight()],
+      [0, 24],
+      [24, 24],
     ];
     if (this.isBeingDragged) {
       // Used to keep track of how far this word has moved this frame

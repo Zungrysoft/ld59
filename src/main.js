@@ -11,8 +11,8 @@ import ModuleOscillator from './module_oscillator.js'
 
 
 document.title = 'Cut Through'
-game.setWidth(360)
-game.setHeight(240)
+game.setWidth(480)
+game.setHeight(320)
 game.createCanvases();
 const { ctx } = game
 ctx.save()
@@ -57,6 +57,9 @@ game.assets.images = await game.loadImages({
   jack_disabled: 'images/ui/jack_disabled.png',
   jack_selected: 'images/ui/jack_selected.png',
   link: 'images/ui/link.png',
+
+  transcribe: 'images/ui/transcribe.png',
+  transcribe_close: 'images/ui/transcribe_close.png',
 
   ...fontData,
 })

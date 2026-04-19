@@ -17,29 +17,41 @@ class PulloutTray extends HTMLElement {
           width: 100%;
           height: 33.3333%;
           display: block;
-          z-index: 999;
           overflow: clip;
+          z-index: 999;
+          pointer-events: none;
         }
 
         .tray {
+          display: flex;
+          flex-direction: row;
           width: 100%;
           height: 100%;
-          background: #e9ecef;
+          background: #333333;
           border-top: 1px solid #aaa;
           transform: translateY(100%);
           transition: transform 0.3s ease;
           padding: 12px 0 12px 12px;
+          pointer-events: auto;
         }
 
         .tray.open {
           transform: translateY(0);
         }
 
+        .column {
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          padding: 16px;
+          flex: 2;
+        }
+
         .tray-inner {
+          flex: 8;
           display: flex;
           flex-direction: column;
           height: 100%;
-          width: 90%;
           gap: 10px;
         }
 
@@ -47,10 +59,13 @@ class PulloutTray extends HTMLElement {
           width: 100%;
           resize: none;
           overflow: auto;
-          height: 3.4em;
+          height: 3.5em;
           line-height: 1.2;
           padding: 8px;
           font-size: 16px;
+          font-family: Courier;
+          background-color: #464646;
+          color: #e2e2e2;
         }
 
         .bottom-box {
@@ -61,13 +76,25 @@ class PulloutTray extends HTMLElement {
           min-height: 60px;
           padding: 8px;
           font-size: 16px;
+          font-family: Courier;
+          background-color: #464646;
+          color: #e2e2e2;
+        }
+
+        .text {
+          height: 10px;
+          margin: 0px;
+          padding: 0px;
         }
       </style>
 
       <div class="tray">
         <div class="tray-inner">
-          <textarea class="top-box"></textarea>
-          <textarea class="bottom-box"></textarea>
+          <textarea class="top-box" placeholder="Enter a transcription here..."></textarea>
+          <textarea class="bottom-box" placeholder="Notes"></textarea>
+        </div>
+        <div class="column">
+          <p>dsdds</p>
         </div>
       </div>
     `;
@@ -76,22 +103,22 @@ class PulloutTray extends HTMLElement {
     this.topBox = shadow.querySelector(".top-box");
   }
 
-  openTray() {
+  open() {
     this.tray.classList.add("open");
-    this.open = true;
+    this.isOpen = true;
   }
 
-  closeTray() {
+  close() {
     this.tray.classList.remove("open");
-    this.open = false;
+    this.isOpen = false;
   }
 
-  toggleTray() {
-    if (this.open) {
-      this.closeTray();
+  toggle() {
+    if (this.isOpen) {
+      this.close();
     }
     else {
-      this.openTray();
+      this.open();
     }
   }
 
