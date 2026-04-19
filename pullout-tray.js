@@ -1,3 +1,5 @@
+import { checkTranscription } from "./src/transcribing.js";
+
 class PulloutTray extends HTMLElement {
   constructor() {
     super();
@@ -85,6 +87,17 @@ class PulloutTray extends HTMLElement {
           height: 10px;
           margin: 0px;
           padding: 0px;
+          user-select: none;
+          color: #e2e2e2;
+          font-family: Courier;
+        }
+
+        .button {
+          padding: 8px;
+          color: #e2e2e2;
+          background-color: #464646;
+          font-family: Courier;
+          margin-bottom: 16px;
         }
       </style>
 
@@ -94,13 +107,27 @@ class PulloutTray extends HTMLElement {
           <textarea class="bottom-box" placeholder="Notes"></textarea>
         </div>
         <div class="column">
-          <p>dsdds</p>
+          <button class="button">Check Transcription</button>
+          <p class="text">dsdds</p>
         </div>
       </div>
     `;
 
     this.tray = shadow.querySelector(".tray");
     this.topBox = shadow.querySelector(".top-box");
+    this.button = shadow.querySelector(".button");
+    this.text = shadow.querySelector(".text");
+
+    this.button.addEventListener("click", () => {
+      const text = this.getTopBoxText();
+      if (text.length > 0) {
+        const [response, shouldClear] = checkTranscription(text);
+        this.setResponseText(response);
+        if (shouldClear) {
+          this.setInputText('');
+        }
+      }
+    });
   }
 
   open() {
@@ -120,6 +147,14 @@ class PulloutTray extends HTMLElement {
     else {
       this.open();
     }
+  }
+
+  setResponseText(text) {
+    this.text.textContent = text;
+  }
+
+  setInputText(text) {
+    this.topBox.value = text;
   }
 
   getTopBoxText() {
