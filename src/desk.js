@@ -27,6 +27,8 @@ export default class Desk extends Thing {
   update() {
     this.time++
 
+    this.clickables['transcribe'].aabb = this.getButtonAabb();
+
     if (game.keysPressed.KeyJ) {
       
     }
@@ -51,6 +53,15 @@ export default class Desk extends Thing {
     }
   }
 
+  getButtonAabb() {
+    return [
+      0,
+      Math.max(game.getThing('tapeDrawer').position[1] + 144, 0),
+      24,
+      Math.max(game.getThing('tapeDrawer').position[1] + 144, 0) + 24
+    ]
+  }
+
   draw() {
     drawBackground({
       color: [0, 0, 0],
@@ -59,10 +70,11 @@ export default class Desk extends Thing {
 
     drawSprite({
       sprite: game.assets.textures[this.isTrayOpen ? 'transcribe_close' : 'transcribe'],
-      position: [0, 0],
+      position: this.getButtonAabb(),
       width: 32,
       height: 32,
       color: this.clickables['transcribe'].isHighlighted ? HIGHLIGHT_YELLOW : [1, 1, 1],
+      depth: 50,
     })
   }
 }

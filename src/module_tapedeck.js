@@ -74,15 +74,15 @@ export default class ModuleTapedeck extends Module {
   }
 
   isPlayEnabled() {
-    return !game.globals.connectingModule && this.loadedTape && this.loadTime <= 0 && !this.isAtEndOfTape;
+    return !game.getThing('tapeDrawer')?.isOpen && !game.globals.connectingModule && this.loadedTape && this.loadTime <= 0 && !this.isAtEndOfTape;
   }
 
   isLoadEnabled() {
-    return !game.globals.connectingModule && !this.isPlaying && this.loadTime <= 0 && !this.isRewinding;
+    return !game.getThing('tapeDrawer')?.isOpen && !game.globals.connectingModule && !this.isPlaying && this.loadTime <= 0 && !this.isRewinding;
   }
 
   isRewindEnabled() {
-    return !game.globals.connectingModule && this.loadedTape && this.loadTime <= 0 && !this.isAtStartOfTape;
+    return !game.getThing('tapeDrawer')?.isOpen && !game.globals.connectingModule && this.loadedTape && this.loadTime <= 0 && !this.isAtStartOfTape;
   }
 
   isChildClickable(key) {
@@ -136,16 +136,20 @@ export default class ModuleTapedeck extends Module {
       }
     }
     else if (key === 'load') {
-      this.loadTime = 85;
-      this.loadedTape = 'test';
-      game.globals.audioSystem.reset(this.nodeId);
-      soundmanager.playSound('load', 1.0, [0.9, 1.1]);
-      this.isAtEndOfTape = false;
-      this.isAtStartOfTape = true;
+      game.getThing('tapeDrawer').open(this);
     }
     else {
       super.onClickChild(key);
     }
+  }
+
+  loadTape(tapeId) {
+    this.loadTime = 85;
+    this.loadedTape = tapeId;
+    game.globals.audioSystem.reset(this.nodeId);
+    soundmanager.playSound('load', 1.0, [0.9, 1.1]);
+    this.isAtEndOfTape = false;
+    this.isAtStartOfTape = true;
   }
 
   draw() {

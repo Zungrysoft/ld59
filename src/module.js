@@ -72,6 +72,10 @@ export default class Module extends Thing {
   }
 
   isChildClickable(key) {
+    if (game.getThing('tapeDrawer').isOpen) {
+      return false;
+    }
+
     if (this.editingParameter) {
       return false;
     }

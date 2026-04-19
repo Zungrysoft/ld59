@@ -8,6 +8,7 @@ import ModuleSpeakers from './module_speakers.js'
 import AudioGraphManager from './audiosystem.js'
 import Desk from './desk.js'
 import ModuleOscillator from './module_oscillator.js'
+import TapeDrawer from './tapedrawer.js'
 
 
 document.title = 'Cut Through'
@@ -27,7 +28,7 @@ let fontData = {};
 for (const char of "abcdefghijklmnopqrstuvwxyz0123456789") {
   fontData["letter_" + char] = 'images/fontsmall/letter_small_' + char + '.png';
 }
-for (const symbol of ['slash', 'question_mark']) {
+for (const symbol of ['slash', 'question_mark', 'colon']) {
   fontData["letter_" + symbol] = 'images/fontsmall/letter_small_' + symbol + '.png';
 }
 
@@ -58,9 +59,16 @@ game.assets.images = await game.loadImages({
   tape: 'images/ui/tape.png',
   tape_label_1: 'images/ui/tape_label_1.png',
   tape_label_2: 'images/ui/tape_label_2.png',
+  tape_select: 'images/ui/tapeselect.png',
 
   transcribe: 'images/ui/transcribe.png',
   transcribe_close: 'images/ui/transcribe_close.png',
+
+  tape_drawer: 'images/ui/tapedrawer.png',
+
+  button_left: 'images/ui/button_left.png',
+  button_right: 'images/ui/button_right.png',
+  button_close: 'images/ui/button_close.png',
 
   ...fontData,
 })
@@ -104,6 +112,7 @@ game.setScene(() => {
   // Global things
   game.addThing(new Selector());
   game.addThing(new Desk());
+  game.addThing(new TapeDrawer());
   game.addThing(new ModuleEQ('eq1', [170, 70]));
   game.addThing(new ModuleOscillator('sine1', [170, 170]));
   game.addThing(new ModuleOscillator('sine2', [170, 160]));

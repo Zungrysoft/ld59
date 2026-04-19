@@ -6,7 +6,35 @@
         "color_1": [0.68, 0.16, 0.4],
         "color_2": [0.38, 0.05, 0.2],
         "color_3": [0.95, 0.60, 0.43],
-        "points_to_unlock": 0,
+        "pointsToUnlock": 0,
+        "transcriptions": [
+            "and so it came to pass that it was good",
+            "second voice is talking here",
+            "hello world"
+        ]
+    },
+    "test2": {
+        "tape": "testmusic",
+        "volume": 0.8,
+        "title": "tape 2",
+        "color_1": [0.18, 0.16, 0.4],
+        "color_2": [0.18, 0.05, 0.2],
+        "color_3": [0.15, 0.60, 0.43],
+        "pointsToUnlock": 1,
+        "transcriptions": [
+            "and so it came to pass that it was good",
+            "second voice is talking here",
+            "hello world"
+        ]
+    },
+    "test3": {
+        "tape": "testmusic",
+        "volume": 0.8,
+        "title": "diary",
+        "color_1": [0.98, 0.16, 0.4],
+        "color_2": [0.18, 0.95, 0.2],
+        "color_3": [0.15, 0.90, 0.43],
+        "pointsToUnlock": 0,
         "transcriptions": [
             "and so it came to pass that it was good",
             "second voice is talking here",

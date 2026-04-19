@@ -99,9 +99,9 @@ export function drawText({
     //   imgName = 'letter_symbol_comma';
     // }
 
-    // if (char === ':') {
-    //   imgName = 'letter_symbol_colon';
-    // }
+    if (char === ':') {
+      imgName = 'letter_colon';
+    }
 
     // if (char === "'") {
     //   imgName = 'letter_symbol_apostraphe';
