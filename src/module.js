@@ -85,7 +85,7 @@ export default class Module extends Thing {
         }
       }
       else {
-        if (key === 'output') {
+        if (key === 'output' || this.parameters?.[key]?.disallowConnections) {
           return false;
         }
       }
@@ -208,6 +208,16 @@ export default class Module extends Thing {
     }
   }
 
+  getParameterValueDisplay(parameter) {
+    const value = game.globals.audioSystem.getObservedControlValue(this.nodeId, parameter);
+
+    if (value != null) {
+      return value;
+    }
+
+    return this.parameterValues[parameter] ?? 0;
+  }
+
   update() {
     this.time ++;
 
@@ -219,6 +229,14 @@ export default class Module extends Thing {
       const paramDelta = ((oldPos[1] - curPos[1]) + (curPos[0] - oldPos[0])) / 120;
 
       this.updateParameter(this.editingParameter, u.clamp(this.editingParameterStartValue + paramDelta, 0, 1));
+    }
+
+    // Automatic parameter adjustment from connections
+    for (const parameter in this.parameters) {
+      const val = game.globals.audioSystem.getObservedControlValue(this.nodeId, parameter);
+      if (val != null) {
+        this.parameterValues[parameter] = val;
+      }
     }
 
     // Dragging

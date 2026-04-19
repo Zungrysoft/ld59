@@ -34,7 +34,20 @@ export default class AudioGraphManager {
     // Tracks audio->control-rate modulation readers
     this.modulationReaders = new Map();
 
+    // Tracks observer readers for audio-output nodes
+    this.nodeObservers = new Map();
+
+    // Tracks which params are currently controlled by which source node
+    // key format: "targetKey.paramName" -> sourceKey
+    this.paramControllers = new Map();
+
+    // Global silent sink that keeps otherwise-inaudible graphs alive
+    this.keepAlive = this.ctx.createGain();
+    this.keepAlive.gain.value = 0;
+    this.keepAlive.connect(this.ctx.destination);
+
     this._createCoreNodes();
+    this._createNodeObservers();
   }
 
   _createCoreNodes() {
@@ -57,10 +70,46 @@ export default class AudioGraphManager {
     this.nodes.get("speaker").input.connect(this.ctx.destination);
   }
 
+  _createNodeObservers() {
+    for (const [key, node] of this.nodes.entries()) {
+      const output = this._getNodeOutput(node);
+      if (!output) continue;
+
+      const analyser = this.ctx.createAnalyser();
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0;
+
+      output.connect(analyser);
+
+      const sampleBuffer = new Float32Array(analyser.fftSize);
+
+      const observer = {
+        analyser,
+        sampleBuffer,
+        lastValue: 0,
+        intervalId: window.setInterval(() => {
+          analyser.getFloatTimeDomainData(sampleBuffer);
+
+          let sum = 0;
+          for (let i = 0; i < sampleBuffer.length; i++) {
+            sum += Math.abs(sampleBuffer[i]);
+          }
+
+          observer.lastValue = Math.min(1, Math.max(0, sum / sampleBuffer.length));
+        }, 1000 / 60)
+      };
+
+      this.nodeObservers.set(key, observer);
+    }
+  }
+
   _createBufferPlayerNode() {
+    const output = this.ctx.createGain();
+    output.connect(this.keepAlive);
+
     return {
       type: "bufferPlayer",
-      output: this.ctx.createGain(),   // persistent graph output
+      output,
       buffer: null,
       playbackRate: 1,
       currentSource: null
@@ -76,6 +125,7 @@ export default class AudioGraphManager {
     gain.gain.value = 0;
 
     osc.connect(gain);
+    gain.connect(this.keepAlive);
     osc.start();
 
     return {
@@ -105,6 +155,8 @@ export default class AudioGraphManager {
 
     // Default: filter active, bypass muted
     bypassGain.gain.value = 0;
+
+    output.connect(this.keepAlive);
 
     return {
       type: "eq",
@@ -151,7 +203,7 @@ export default class AudioGraphManager {
   }
 
   updateParameter(nodeId, parameter, value) {
-    if (['boolean', 'number'].includes(typeof this.currentGraph?.[nodeId]?.[parameter])) {
+    if (["boolean", "number"].includes(typeof this.currentGraph?.[nodeId]?.[parameter])) {
       this.currentGraph[nodeId][parameter] = value;
       const node = this.nodes.get(nodeId);
       if (node) {
@@ -161,13 +213,12 @@ export default class AudioGraphManager {
   }
 
   _disconnectDynamicConnections() {
-    // Stop any audio->control readers
     for (const reader of this.modulationReaders.values()) {
       try { clearInterval(reader.intervalId); } catch {}
       try { reader.analyser.disconnect(); } catch {}
-      try { reader.silentTap.disconnect(); } catch {}
     }
     this.modulationReaders.clear();
+    this.paramControllers.clear();
 
     for (const [key, node] of this.nodes.entries()) {
       if (node.type === "eq") {
@@ -181,13 +232,34 @@ export default class AudioGraphManager {
         node.input.connect(node.bypassGain);
         node.bypassGain.connect(node.output);
 
+        // Restore permanent keepalive connection
+        node.output.connect(this.keepAlive);
+
         node.modulationMixers.clear();
       } else if (node.type === "speaker") {
         try { node.input.disconnect(); } catch {}
         node.input.connect(this.ctx.destination);
       } else if (node.type === "bufferPlayer" || node.type === "oscillator") {
         try { node.output.disconnect(); } catch {}
+
+        // Restore permanent keepalive connection
+        node.output.connect(this.keepAlive);
       }
+    }
+
+    // Reconnect observers after output disconnect/reconnect work
+    this._reconnectNodeObservers();
+  }
+
+  _reconnectNodeObservers() {
+    for (const [key, observer] of this.nodeObservers.entries()) {
+      const node = this.nodes.get(key);
+      const output = node ? this._getNodeOutput(node) : null;
+      if (!output) continue;
+
+      try { observer.analyser.disconnect(); } catch {}
+
+      output.connect(observer.analyser);
     }
   }
 
@@ -279,6 +351,7 @@ export default class AudioGraphManager {
     // by measuring average loudness over ~1/60s windows.
     if (this._isControlRateParamTarget(targetNode, paramName)) {
       this._connectAudioRateSourceAsLoudnessControl(sourceOutput, targetNode, paramName, sourceKey, targetKey);
+      this.paramControllers.set(`${targetKey}.${paramName}`, sourceKey);
       return;
     }
 
@@ -308,13 +381,7 @@ export default class AudioGraphManager {
     analyser.fftSize = 2048;
     analyser.smoothingTimeConstant = 0;
 
-    // Keep the analyser branch alive without making it audible
-    const silentTap = this.ctx.createGain();
-    silentTap.gain.value = 0;
-
     sourceOutput.connect(analyser);
-    analyser.connect(silentTap);
-    silentTap.connect(this.ctx.destination);
 
     const sampleBuffer = new Float32Array(analyser.fftSize);
     const intervalMs = 1000 / 60;
@@ -336,7 +403,6 @@ export default class AudioGraphManager {
 
     this.modulationReaders.set(readerId, {
       analyser,
-      silentTap,
       intervalId
     });
   }
@@ -375,6 +441,16 @@ export default class AudioGraphManager {
         node.output.gain.setTargetAtTime(value, now, 0.01);
       }
     }
+  }
+
+  getObservedControlValue(nodeKey, paramName) {
+    const controllerKey = this.paramControllers.get(`${nodeKey}.${paramName}`);
+    if (!controllerKey) return null;
+
+    const observer = this.nodeObservers.get(controllerKey);
+    if (!observer) return null;
+
+    return observer.lastValue;
   }
 
   _getNodeInput(node) {

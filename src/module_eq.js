@@ -33,6 +33,7 @@ export default class ModuleEQ extends Module {
     bypass: {
       inputHeight: 48,
       isBoolean: true,
+      disallowConnections: true,
     },
   }
 
@@ -56,7 +57,12 @@ export default class ModuleEQ extends Module {
       }
 
       const val = i / (EQ_WIDTH - 1);
-      const output = this.eqDisplayCurve(val, this.parameterValues.frequency, this.parameterValues.width, this.parameterValues.gain);
+      const output = this.eqDisplayCurve(
+        val,
+        this.getParameterValueDisplay('frequency'),
+        this.getParameterValueDisplay('width'),
+        this.getParameterValueDisplay('gain'),
+      );
 
       const x = EQ_X + i;
       const y = EQ_Y + Math.round(EQ_HEIGHT * (u.clamp(output, 0, 1) * -2 + 1));
