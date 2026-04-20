@@ -72,6 +72,17 @@ class PulloutTray extends HTMLElement {
           display: none;
         }
 
+        .title-text {
+          width: 100%;
+          min-height: 20px;
+          line-height: 20px;
+          margin: 0;
+          color: #e2e2e2;
+          font-family: Courier;
+          user-select: none;
+          white-space: pre-wrap;
+        }
+
         .main-box {
           width: 100%;
           flex: 1;
@@ -146,7 +157,8 @@ class PulloutTray extends HTMLElement {
 
       <div class="tray">
         <div class="tray-inner">
-          <textarea class="main-box" placeholder="Enter transcription here..." disabled>Load a tape to begin transcribing</textarea>
+          <p class="title-text">Load a tape to begin transcribing</p>
+          <textarea class="main-box" disabled></textarea>
         </div>
         <div class="column">
           <div class="button-row">
@@ -162,6 +174,7 @@ class PulloutTray extends HTMLElement {
 
     this.tray = shadow.querySelector(".tray");
     this.trayInner = shadow.querySelector(".tray-inner");
+    this.titleTextBox = shadow.querySelector(".title-text");
     this.mainBox = shadow.querySelector(".main-box");
     this.button = shadow.querySelector(".check-button");
     this.textBox = shadow.querySelector(".text");
@@ -184,6 +197,7 @@ class PulloutTray extends HTMLElement {
     });
 
     this.button.addEventListener("click", () => {
+      soundmanager.playSound('clack', 0.8, 1.1);
       const text = this.getTopBoxText();
       if (text.length > 0) {
         const [response, shouldClear] = checkTranscription(this.tapeId, text);
@@ -239,6 +253,7 @@ class PulloutTray extends HTMLElement {
   }
 
   onTranscriptionButtonClicked(index) {
+    soundmanager.playSound('clack', 0.8, 1.2);
     this.setSelectedTranscription(index);
   }
 
@@ -264,12 +279,20 @@ class PulloutTray extends HTMLElement {
 
   updateState() {
     const transcriptionCount = this.tape?.transcriptions?.length ?? 0;
+    const isTranscribed = getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
 
     this.text = getSavedHint(this.tapeId, this.selectedTranscription);
+    this.titleText = `Transcribe '${this.tape.title}'`;
     if (transcriptionCount === 0) {
-      this.text = "This tape does not require transcription.";
+      this.text = "";
+      this.titleText = "This tape does not require transcription";
+    }
+    if (isTranscribed) {
+      const speaker = this.tape.transcriptions[this.selectedTranscription].speaker;
+      this.titleText = speaker ? `${this.tape.title} - ${speaker}` : this.tape.title;
     }
     this.mainBox.value = this.text;
+    this.titleTextBox.textContent = this.titleText;
 
     this.transcriptionButtons.forEach((button, index) => {
       const shouldHide = index >= transcriptionCount;
@@ -277,8 +300,9 @@ class PulloutTray extends HTMLElement {
       button.disabled = shouldHide || index === this.selectedTranscription;
     });
 
-    this.button.disabled = !this.tape || getIsTapeTranscribed(this.tapeId, this.selectedTranscription) || transcriptionCount === 0;
-    this.mainBox.disabled = (!this.tape) || getIsTapeTranscribed(this.tapeId, this.selectedTranscription) || transcriptionCount === 0;
+    this.button.disabled = !this.tape || isTranscribed || transcriptionCount === 0;
+    this.mainBox.disabled = (!this.tape) || isTranscribed || transcriptionCount === 0;
+    this.mainBox.placeholder = this.mainBox.disabled ? "" : "Enter transcription here...";
   }
 }
 

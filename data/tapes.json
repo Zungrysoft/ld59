@@ -8,7 +8,7 @@
         "color_3": [0, 0, 0],
         "pointsToUnlock": 0,
         "transcriptions": [
-            {   
+            {
                 "requiredCorrectness": 0.75,
                 "hintRate": 0,
                 "hintGapLength": 1,
@@ -36,11 +36,12 @@
         "color_3": [0.56, 0.64, 0.57],
         "pointsToUnlock": 1,
         "transcriptions": [
-            {   
+            {
                 "requiredCorrectness": 0.85,
                 "hintRate": 0.6,
                 "hintGapLength": 3,
                 "hintGapLengthRange": 2,
+                "speaker": "Vincent Lagrange",
                 "text": "Here's my setup. Uh, some of it. Some of it's off the shelf. It's like, there's all these different stories going on around you. And most of them are walled off and hidden. And these tapes give me a window into another world through people's conversations. Oh yeah hey okay well, look, I told you it was weird, right? I told you. I, I, Hey, you said you like a guy with hobbies. This is my hobby. Uh, yeah, I'm recording us. Yeah, but I can stop it though if you want."
             },
             {   
@@ -48,6 +49,7 @@
                 "hintRate": 0.6,
                 "hintGapLength": 7,
                 "hintGapLengthRange": 3,
+                "speaker": "Unidentified Female",
                 "text": "Did you build this all yourself? Wow. So you just like recording other people's conversations? Private conversations. Well it's just super weird. Hey is it recording right now? Wait, this is all going on tape?"
             }
         ]
@@ -66,6 +68,7 @@
                 "hintRate": 0,
                 "hintGapLength": 22,
                 "hintGapLengthRange": 4,
+                "speaker": "Vincent Lagrange",
                 "text": "ssssss"
             }
         ]

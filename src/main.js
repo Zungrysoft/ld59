@@ -2,15 +2,8 @@ import * as game from 'game'
 import * as webgl from 'webgl'
 import * as soundmanager from 'soundmanager'
 import Selector from './selector.js'
-import ModuleEQ from './module_eq.js'
-import ModuleTapedeck from './module_tapedeck.js'
-import ModuleSpeakers from './module_speakers.js'
 import AudioGraphManager from './audiosystem.js'
-import Desk from './desk.js'
-import ModuleOscillator from './module_oscillator.js'
-import TapeDrawer from './tapedrawer.js'
-import ModuleLowpass from './module_lowpass.js'
-import ModuleHighpass from './module_highpass.js'
+import TitleScreen from './titlescreen.js'
 
 
 document.title = 'Cut Through'
@@ -74,6 +67,9 @@ game.assets.images = await game.loadImages({
   button_right: 'images/ui/button_right.png',
   button_close: 'images/ui/button_close.png',
 
+  titlescreen: 'images/ui/titlescreen.png',
+  helpscreen: 'images/ui/helpscreen.png',
+
   ...fontData,
 })
 
@@ -124,8 +120,7 @@ game.assets.textures = Object.fromEntries(
 game.setScene(() => {
   // Global things
   game.addThing(new Selector());
-  game.addThing(new Desk());
-  game.addThing(new TapeDrawer());
+  game.addThing(new TitleScreen());
 
   game.globals.soundWave = [0, 0, 0, 0, 0, 0, 0, 0]
 
