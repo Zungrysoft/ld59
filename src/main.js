@@ -97,6 +97,7 @@ game.assets.sounds = await game.loadAudio({
   unload3: 'sounds/unload3.wav',
   load: 'sounds/load.wav',
   rewind: 'sounds/rewind.wav',
+  play: 'sounds/play.wav',
 })
 soundmanager.setSoundsTable(game.assets.sounds)
 

@@ -51,8 +51,7 @@ export default class ModuleTapedeck extends Module {
     if (this.isPlaying) {
       const playState = game.globals.audioSystem?.playState?.get(this.nodeId);
       if (playState && (!playState.playing)) {
-        soundmanager.playSound(['switchloud1', 'switchloud2'], 1.0, [0.9, 1.1]);
-        this.isPlaying = false;
+        this.endPlay();
         this.isAtEndOfTape = true;
       }
     }
@@ -64,6 +63,14 @@ export default class ModuleTapedeck extends Module {
     }
     this.isRewinding = false;
     game.assets.sounds.rewind.pause();
+  }
+
+  endPlay() {
+    if (this.isPlaying) {
+      soundmanager.playSound(['switchloud1', 'switchloud2'], 1.0, [0.9, 1.1]);
+    }
+    this.isPlaying = false;
+    game.assets.sounds.play.pause();
   }
 
   init() {
@@ -104,7 +111,7 @@ export default class ModuleTapedeck extends Module {
   onClickChild(key) {
     if (key === 'play') {
       if (this.isPlaying) {
-        soundmanager.playSound(['switchloud1', 'switchloud2'], 1.0, [0.9, 1.1]);
+        this.endPlay();
         this.isPlaying = false;
         if (game.globals.audioSystem) {
           game.globals.audioSystem.pause(this.nodeId);
@@ -112,6 +119,8 @@ export default class ModuleTapedeck extends Module {
       }
       else {
         soundmanager.playSound(['switch2'], 1.0, [0.9, 1.1]);
+        soundmanager.playSound(['play'], 0.4, 1.0);
+        game.assets.sounds.play.loop = true
         this.isPlaying = true;
         this.isRewinding = false;
         this.endRewind();
@@ -132,7 +141,7 @@ export default class ModuleTapedeck extends Module {
       }
       else {
         this.isRewinding = true;
-        this.isPlaying = false;
+        this.endPlay();
         soundmanager.playSound(['switchloud3'], 1.0, [0.9, 1.1]);
         soundmanager.playSound(['rewind'], 1.0, 1.0);
         game.assets.sounds.rewind.loop = true
