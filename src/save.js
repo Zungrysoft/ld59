@@ -3,10 +3,35 @@ import * as game from 'game'
 import * as u from 'utils'
 
 let saveData = null;
-// let selectedTranscription = 0;
 
-export function deleteSaveData() {
-  localStorage.removeItem('cutThroughSave')
+
+
+function generateHint(text, hintRate, hintRangeLength, hintRangeLengthRange) {
+  if (hintRate === 0) {
+    return "";
+  }
+
+  const words = text.split(" ");
+  let ret = "";
+  let i = 0;
+  while (i < words.length) {
+    const gapLength = Math.round(hintRangeLength + u.map(Math.random(), 0, 1, -hintRangeLengthRange, hintRangeLengthRange));
+    const stringLengthMultiplier = (1 / hintRate) - 1;
+    const stringLength = Math.round(stringLengthMultiplier * (hintRangeLength + u.map(Math.random(), 0, 1, -hintRangeLengthRange, hintRangeLengthRange)));
+    
+    for (let j = 0; j < stringLength; j ++) {
+      if (i < words.length) {
+        ret = ret + words[i] + " ";
+      }
+      i ++;
+    }
+    if (i < words.length) {
+      i += gapLength;
+      ret = ret + "- ";
+    }
+  }
+
+  return ret.trim();
 }
 
 function generateHints() {
@@ -15,11 +40,16 @@ function generateHints() {
     const tape = game.assets.data.tapes[tapeId];
     let hints = [];
     for (let i = 0; i < tape.transcriptions.length; i ++) {
-      hints.push("HINT FOR " + i)
+      const transcription = tape.transcriptions[i];
+      hints.push(generateHint(transcription.text, transcription.hintRate, transcription.hintGapLength, transcription.hintGapLengthRange));
     }
     ret[tapeId] = hints;
   }
   return ret;
+}
+
+export function deleteSaveData() {
+  localStorage.removeItem('cutThroughSave')
 }
 
 function checkLoad() {
@@ -48,14 +78,6 @@ export function setSavedHint(tapeId, transcription, text) {
   }
   save();
 }
-
-// function setSelectedTranscriptionSave(i) {
-//   selectedTranscription = i;
-//   const tray = document.getElementById("tray");
-//   if (tray) {
-//     tray.setSelectedTranscription
-//   }
-// }
 
 function save() {
   localStorage.setItem('cutThroughSave', JSON.stringify(saveData));

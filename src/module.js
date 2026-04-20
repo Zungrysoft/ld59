@@ -143,7 +143,6 @@ export default class Module extends Thing {
         }
         else {
           // TODO: Manual parameter adjustment
-          console.log(this.parameters, key)
           if (this.parameters[key].isBoolean) {
             this.updateParameter(key, !this.parameterValues[key])
           }

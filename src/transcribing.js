@@ -28,8 +28,6 @@ export function checkTranscription(tapeId, rawText) {
     const dist = wordLevenshtein(text, transcription);
     const correctness = 1 - u.clamp(dist / transcription.split(" ").length, 0, 1);
 
-    console.log(rawText, transcription, tape.transcriptions[i].requiredCorrectness, dist, correctness);
-
     if (correctness >= tape.transcriptions[i].requiredCorrectness && correctness > bestCorrectness) {
       bestCorrectness = correctness;
       bestTranscription = i;
@@ -55,8 +53,8 @@ export function checkTranscription(tapeId, rawText) {
 }
 
 function wordLevenshtein(a, b) {
-  const wordsA = a.split(" ");
-  const wordsB = b.split(" ");
+  const wordsA = a.split(" ").filter(x => x !== "");;
+  const wordsB = b.split(" ").filter(x => x !== "");
 
   // Always use the shorter array for the DP row to save memory.
   let source = wordsA;
