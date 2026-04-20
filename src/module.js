@@ -211,7 +211,7 @@ export default class Module extends Thing {
     // Each output can only have one input
     const oldModule = module.getPreviousModule(parameter);
     if (oldModule) {
-      oldModule.removeConnection(module, parameter, noUpdate);
+      oldModule.removeConnection(module, parameter, true);
     }
 
     this.connections.push({ module, parameter });

@@ -30,7 +30,7 @@ let fontData = {};
 for (const char of "abcdefghijklmnopqrstuvwxyz0123456789") {
   fontData["letter_" + char] = 'images/fontsmall/letter_small_' + char + '.png';
 }
-for (const symbol of ['slash', 'question_mark', 'colon']) {
+for (const symbol of ['slash', 'question_mark', 'colon', 'exclamation_point']) {
   fontData["letter_" + symbol] = 'images/fontsmall/letter_small_' + symbol + '.png';
 }
 
@@ -126,12 +126,6 @@ game.setScene(() => {
   game.addThing(new Selector());
   game.addThing(new Desk());
   game.addThing(new TapeDrawer());
-  game.addThing(new ModuleEQ('eq1', [170, 70]));
-  game.addThing(new ModuleLowpass('eq2', [171, 70]));
-  game.addThing(new ModuleHighpass('eq3', [172, 70]));
-  game.addThing(new ModuleOscillator('sine1', [170, 170]));
-  game.addThing(new ModuleTapedeck('audio1', [20, 20]));
-  game.addThing(new ModuleSpeakers('speaker', [game.getWidth() - 32 - 2, 2]));
 
   game.globals.soundWave = [0, 0, 0, 0, 0, 0, 0, 0]
 

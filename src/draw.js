@@ -91,9 +91,9 @@ export function drawText({
       imgName = 'letter_question_mark';
     }
 
-    // if (char === '!') {
-    //   imgName = 'letter_symbol_exclamation_point';
-    // }
+    if (char === '!') {
+      imgName = 'letter_exclamation_point';
+    }
 
     // if (char === ',') {
     //   imgName = 'letter_symbol_comma';
@@ -125,7 +125,7 @@ export function drawText({
       if (['m', 'w'].includes(char.toLowerCase())) {
         translate[0] += 6;
       }
-      else if (['i'].includes(char.toLowerCase())) {
+      else if (['i', '!'].includes(char.toLowerCase())) {
         translate[0] += 2;
       }
       else {
@@ -137,11 +137,11 @@ export function drawText({
 }
 
 export function getTextHeight(text) {
-  return text.split('\n').length * 32;
+  return text.split('\n').length * 7;
 }
 
 export function getTextWidth(text) {
-  return Math.max(...text.split('\n').map(x => x.length)) * 20
+  return Math.max(...text.split('\n').map(x => x.length)) * 4
 }
 
 function convertDepth(depth) {

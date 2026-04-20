@@ -69,6 +69,7 @@ function checkLoad() {
 }
 
 export function getSavedHint(tapeId, transcription) {
+  checkLoad();
   if (getIsTapeTranscribed(tapeId, transcription)) {
     return game.assets.data.tapes[tapeId].transcriptions[transcription].text;
   }
@@ -76,6 +77,7 @@ export function getSavedHint(tapeId, transcription) {
 }
 
 export function setSavedHint(tapeId, transcription, text) {
+  checkLoad();
   if (saveData.hints?.[tapeId]?.[transcription] != null) {
     saveData.hints[tapeId][transcription] = text;
   }
@@ -93,6 +95,8 @@ export function getIsTapeTranscribed(tape, conversation) {
 }
 
 export function getTapeTranscribedCount(tape) {
+  checkLoad();
+
   const total = game.assets.data.tapes[tape].transcriptions.length;
   let count = 0;
   for (let i = 0; i < total; i ++) {
@@ -104,6 +108,8 @@ export function getTapeTranscribedCount(tape) {
 }
 
 export function getTotalTranscribedCount() {
+  checkLoad();
+
   let count = 0;
   let total = 0;
   for (const tape in game.assets.data.tapes) {

@@ -21,7 +21,7 @@ export default class ModuleHighpass extends ModuleEQ {
     },
     frequency: {
       inputHeight: 27,
-      defaultValue: 0.5,
+      defaultValue: 0.4,
     },
     bypass: {
       inputHeight: 34,

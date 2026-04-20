@@ -3,35 +3,36 @@ import * as u from 'utils'
 import * as soundmanager from 'soundmanager'
 import * as vec2 from 'vector2'
 import * as vec3 from 'vector3'
-import Tray from './tray.js'
 import { drawBackground, drawSprite, drawText, getTextHeight, getTextWidth } from './draw.js'
-import Button from './button.js'
-import Furniture from './furniture.js'
 import Thing from 'thing'
-import { TEXT_HIGHLIGHTED, TEXT_REGULAR, TEXT_SELECTED, TEXT_TITLE } from './quiz.js'
 
 export default class Reminder extends Thing {
   time = 0
   position = [0, 0]
   depth = 2000
 
-  constructor(text, isDark) {
+  constructor(text, color1, color2, delay) {
     super()
     this.text = text
-    this.middlePos = vec2.add([1280/2, 720/2], [getTextWidth(text) * -0.5, getTextHeight(text) * -0.5])
+    this.middlePos = vec2.add([game.getWidth()/2, game.getHeight()/2], [getTextWidth(text) * -0.5 * 2, getTextHeight(text) * -0.5 * 2])
     this.position = [-400, this.middlePos[1]]
-    this.endPos = [1280 + 400, this.middlePos[1]]
-    this.isDark = isDark
+    this.endPos = [game.getHeight() + 400, this.middlePos[1]]
+    this.color1 = color1
+    this.color2 = color2
+    this.time = -delay;
   }
 
   update() {
     this.time ++
 
-    if (this.time < 6 * 60) {
-      this.position = vec2.lerp(this.position, this.middlePos, 0.04)
+    if (this.time < 0) {
+      // no-op
+    }
+    else if (this.time < 6 * 60) {
+      this.position = vec2.lerp(this.position, this.middlePos, 0.03)
     }
     else {
-      this.position = vec2.lerp(this.position, this.endPos, 0.04)
+      this.position = vec2.lerp(this.position, this.endPos, 0.03)
       if (this.time > 12 * 60) {
         this.isDead = true
       }
@@ -43,13 +44,15 @@ export default class Reminder extends Thing {
       text: this.text,
       position: this.position,
       depth: this.depth,
-      color: this.isDark ? TEXT_HIGHLIGHTED : TEXT_SELECTED,
+      color: this.color1,
+      scale: 2,
     })
     drawText({
       text: this.text,
       position: vec2.add(this.position, [2, 2]),
       depth: this.depth - 1,
-      color: this.isDark ? TEXT_TITLE : TEXT_REGULAR,
+      color: this.color2,
+      scale: 2,
     })
   }
 }
