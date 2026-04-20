@@ -9,6 +9,8 @@ import AudioGraphManager from './audiosystem.js'
 import Desk from './desk.js'
 import ModuleOscillator from './module_oscillator.js'
 import TapeDrawer from './tapedrawer.js'
+import ModuleLowpass from './module_lowpass.js'
+import ModuleHighpass from './module_highpass.js'
 
 
 document.title = 'Cut Through'
@@ -39,6 +41,8 @@ game.assets.images = await game.loadImages({
   module_tapedeck: 'images/module/tapedeck.png',
   module_speakers: 'images/module/speakers.png',
   module_oscillator: 'images/module/oscillator.png',
+  module_lowpass: 'images/module/lowpass.png',
+  module_highpass: 'images/module/highpass.png',
 
   module_tapedeck_button_rewind: 'images/module/tapedeck_button_rewind.png',
   module_tapedeck_button_rewind_depressed: 'images/module/tapedeck_button_rewind_depressed.png',
@@ -114,8 +118,9 @@ game.setScene(() => {
   game.addThing(new Desk());
   game.addThing(new TapeDrawer());
   game.addThing(new ModuleEQ('eq1', [170, 70]));
+  game.addThing(new ModuleLowpass('eq2', [171, 70]));
+  game.addThing(new ModuleHighpass('eq3', [172, 70]));
   game.addThing(new ModuleOscillator('sine1', [170, 170]));
-  game.addThing(new ModuleOscillator('sine2', [170, 160]));
   game.addThing(new ModuleTapedeck('audio1', [20, 20]));
   game.addThing(new ModuleSpeakers('speaker', [game.getWidth() - 32 - 2, 2]));
 

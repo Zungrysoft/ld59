@@ -59,8 +59,10 @@ export default class ModuleTapedeck extends Module {
   }
 
   endRewind() {
+    if (this.isRewinding) {
+      soundmanager.playSound(['switchloud4'], 1.0, [0.9, 1.0]);
+    }
     this.isRewinding = false;
-    soundmanager.playSound(['switchloud4'], 1.0, [0.9, 1.0]);
     game.assets.sounds.rewind.pause();
   }
 
@@ -112,6 +114,7 @@ export default class ModuleTapedeck extends Module {
         soundmanager.playSound(['switch2'], 1.0, [0.9, 1.1]);
         this.isPlaying = true;
         this.isRewinding = false;
+        this.endRewind();
         this.isAtStartOfTape = false;
         if (game.globals.audioSystem) {
           const tape = game.assets.data.tapes[this.loadedTape].tape;
@@ -132,6 +135,7 @@ export default class ModuleTapedeck extends Module {
         this.isPlaying = false;
         soundmanager.playSound(['switchloud3'], 1.0, [0.9, 1.1]);
         soundmanager.playSound(['rewind'], 1.0, 1.0);
+        game.assets.sounds.rewind.loop = true
         this.isAtEndOfTape = false;
       }
     }

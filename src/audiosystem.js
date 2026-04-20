@@ -57,11 +57,12 @@ export default class AudioGraphManager {
 
     // Sine oscillator
     this.nodes.set("sine1", this._createOscillatorNode());
-    this.nodes.set("sine2", this._createOscillatorNode());
+    // this.nodes.set("sine2", this._createOscillatorNode());
 
     // EQs
     this.nodes.set("eq1", this._createEQNode());
-    this.nodes.set("eq2", this._createEQNode());
+    this.nodes.set("eq2", this._createEQNode("highshelf"));
+    this.nodes.set("eq3", this._createEQNode("lowshelf"));
 
     // Speaker
     this.nodes.set("speaker", {
@@ -137,12 +138,12 @@ export default class AudioGraphManager {
     };
   }
 
-  _createEQNode() {
+  _createEQNode(type = "peaking") {
     const input = this.ctx.createGain();
     const filter = this.ctx.createBiquadFilter();
     const output = this.ctx.createGain();
 
-    filter.type = "peaking";
+    filter.type = type;
 
     input.connect(filter);
     filter.connect(output);

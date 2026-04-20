@@ -37,10 +37,12 @@ export default class ModuleEQ extends Module {
     },
   }
 
-  constructor(nodeId, position) {
+  constructor(nodeId, position, noInit = false) {
     super(nodeId, position);
 
-    this.init();
+    if (!noInit) {
+      this.init();
+    }
   }
 
   draw() {
@@ -62,17 +64,21 @@ export default class ModuleEQ extends Module {
         this.getParameterValueDisplay('frequency'),
         this.getParameterValueDisplay('width'),
         this.getParameterValueDisplay('gain'),
+        this.isLowPass,
+        this.isHighPass,
       );
 
       const x = EQ_X + i;
       const y = EQ_Y + Math.round(EQ_HEIGHT * (u.clamp(output, 0, 1) * -2 + 1));
 
-      drawText({
-        text: this.parameterValues.bypass ? 'bypass' : 'on',
-        color: DISABLED_GREY,
-        position: vec2.add(this.position, [6, 45]),
-        depth: this.depth + 2,
-      })
+      if (this.parameters.bypass) {
+        drawText({
+          text: this.parameterValues.bypass ? 'bypass' : 'on',
+          color: DISABLED_GREY,
+          position: vec2.add(this.position, [6, this.parameters.bypass.inputHeight - 3]),
+          depth: this.depth + 2,
+        })
+      }
 
       drawSprite({
         sprite: game.assets.textures.square,
@@ -109,12 +115,19 @@ export default class ModuleEQ extends Module {
     }
   }
 
-  eqDisplayCurve(x, freq, width, gain) {
+  eqDisplayCurve(x, freq, width, gain, isLowPass, isHighPass) {
     const f = normToFreq(x);
     const f0 = normToFreq(freq);
 
     const logF = logFreq(f);
     const logF0 = logFreq(f0);
+
+    if (logF > logF0 && isLowPass) {
+      return gain;
+    }
+    else if (logF < logF0 && isHighPass) {
+      return gain;
+    }
 
     const distance = logF - logF0;
     const sigma = scaleSigma(width);

@@ -21,6 +21,7 @@ export default class Module extends Thing {
   clickables = {}
   parameters = {}
   connections = []
+  isInitialized = false
   
   constructor(nodeId, position = [100, 100]) {
     super();
@@ -30,6 +31,11 @@ export default class Module extends Thing {
   }
 
   init() {
+    if (this.isInitialized) {
+      return;
+    }
+    this.isInitialized = true;
+
     this.parameterValues = {};
     this.clickBoxes = [];
     for (const paramKey in this.parameters) {
@@ -38,14 +44,16 @@ export default class Module extends Thing {
       const typeDefault = param.isBoolean ? false : 0.5;
       this.parameterValues[paramKey] = param.defaultValue ?? typeDefault;
 
-      // Spawn clickable for jack
-      const clickableAabb = [
-        -3,
-        param.inputHeight - 3,
-        4,
-        param.inputHeight + 4,
-      ];
-      this.clickables[paramKey] = game.addThing(new Clickable(this, paramKey, clickableAabb));
+      if (!param.isHidden) {
+        // Spawn clickable for jack
+        const clickableAabb = [
+          -3,
+          param.inputHeight - 3,
+          4,
+          param.inputHeight + 4,
+        ];
+        this.clickables[paramKey] = game.addThing(new Clickable(this, paramKey, clickableAabb));
+      }
     }
 
     // Spawn clickable for output jack
@@ -135,6 +143,7 @@ export default class Module extends Thing {
         }
         else {
           // TODO: Manual parameter adjustment
+          console.log(this.parameters, key)
           if (this.parameters[key].isBoolean) {
             this.updateParameter(key, !this.parameterValues[key])
           }
@@ -316,6 +325,10 @@ export default class Module extends Thing {
 
     // Inputs
     for (const parameter in this.parameters) {
+      if (this.parameters[parameter].isHidden) {
+        continue;
+      }
+
       const jackPos = [-7, this.parameters[parameter].inputHeight - 7];
 
       let sprite = 'jack';
