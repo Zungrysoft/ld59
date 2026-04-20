@@ -36,7 +36,6 @@ function checkLoad() {
 }
 
 export function getSavedHint(tapeId, transcription) {
-  console.log(tapeId, transcription)
   return saveData.hints?.[tapeId]?.[transcription];
 }
 
@@ -44,6 +43,7 @@ export function setSavedHint(tapeId, transcription, text) {
   if (saveData.hints?.[tapeId]?.[transcription] != null) {
     saveData.hints[tapeId][transcription] = text;
   }
+  save();
 }
 
 // function setSelectedTranscriptionSave(i) {

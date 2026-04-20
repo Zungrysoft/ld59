@@ -1,4 +1,4 @@
-import { getSavedHint } from "./src/save.js";
+import { getIsTapeTranscribed, getSavedHint, setSavedHint } from "./src/save.js";
 import { checkTranscription } from "./src/transcribing.js";
 
 class PulloutTray extends HTMLElement {
@@ -54,12 +54,21 @@ class PulloutTray extends HTMLElement {
           flex: 2;
         }
 
+        .column.empty {
+          justify-content: center;
+        }
+
         .tray-inner {
           flex: 8;
           display: flex;
           flex-direction: column;
           height: 100%;
           gap: 10px;
+        }
+
+        .tray-inner.hidden,
+        .column.hidden {
+          display: none;
         }
 
         .main-box {
@@ -73,6 +82,10 @@ class PulloutTray extends HTMLElement {
           font-family: Courier;
           background-color: #464646;
           color: #e2e2e2;
+        }
+
+        .main-box:disabled {
+          background-color: #303030;
         }
 
         .button-row {
@@ -99,15 +112,40 @@ class PulloutTray extends HTMLElement {
         .button {
           padding: 8px;
           color: #e2e2e2;
-          background-color: #464646;
+          background-color: #6f6f6f;
+          border: 1px solid #cfcfcf;
           font-family: Courier;
           margin-bottom: 16px;
+          cursor: pointer;
+        }
+
+        .button:hover:not(:disabled) {
+          background-color: #7d7d7d;
+        }
+
+        .button:disabled {
+          background-color: #464646;
+          border-color: #666666;
+          color: #9a9a9a;
+          cursor: default;
+        }
+
+        .hidden-button {
+          display: none;
+        }
+
+        .empty-header {
+          margin: 0;
+          color: #e2e2e2;
+          font-family: Courier;
+          text-align: center;
+          user-select: none;
         }
       </style>
 
       <div class="tray">
         <div class="tray-inner">
-          <textarea class="main-box" placeholder="Enter text here..."></textarea>
+          <textarea class="main-box" placeholder="Enter text here..." disabled>Load a tape to begin transcribing</textarea>
         </div>
         <div class="column">
           <div class="button-row">
@@ -115,16 +153,18 @@ class PulloutTray extends HTMLElement {
             <button class="button transcription-button transcription-b" disabled>B</button>
             <button class="button transcription-button transcription-c" disabled>C</button>
           </div>
-          <button class="button check-button">Check Transcription</button>
+          <button class="button check-button" disabled>Check Transcription</button>
           <p class="text"></p>
         </div>
       </div>
     `;
 
     this.tray = shadow.querySelector(".tray");
+    this.trayInner = shadow.querySelector(".tray-inner");
     this.mainBox = shadow.querySelector(".main-box");
     this.button = shadow.querySelector(".check-button");
     this.textBox = shadow.querySelector(".text");
+    this.column = shadow.querySelector(".column");
 
     this.transcriptionButtons = [
       shadow.querySelector(".transcription-a"),
@@ -167,16 +207,15 @@ class PulloutTray extends HTMLElement {
   toggle() {
     if (this.isOpen) {
       this.close();
-    }
-    else {
+    } else {
       this.open();
     }
   }
 
-  setResponseText(text, status=null) {
+  setResponseText(text, status = null) {
     this.textBox.textContent = text;
 
-    if (status === 'success') {
+    if (status === "success") {
       this.tray.classList.remove("flash-green");
       void this.tray.offsetWidth;
       this.tray.classList.add("flash-green");
@@ -188,13 +227,12 @@ class PulloutTray extends HTMLElement {
     }
   }
 
-  
-
   getTopBoxText() {
     return this.mainBox.value;
   }
 
   onTextEdited(newText) {
+    setSavedHint(this.tapeId, this.selectedTranscription, newText);
   }
 
   onTranscriptionButtonClicked(index) {
@@ -222,12 +260,20 @@ class PulloutTray extends HTMLElement {
   }
 
   updateState() {
+    const hasTape = !!this.tape;
+
     this.text = getSavedHint(this.tapeId, this.selectedTranscription);
     this.mainBox.value = this.text;
-    const transcriptionCount = this.tape?.transcriptions?.length
+    const transcriptionCount = this.tape?.transcriptions?.length ?? 0;
+
     this.transcriptionButtons.forEach((button, index) => {
-      button.disabled = index >= transcriptionCount || index === this.selectedTranscription;
+      const shouldHide = index >= transcriptionCount;
+      button.classList.toggle("hidden-button", shouldHide);
+      button.disabled = shouldHide || index === this.selectedTranscription;
     });
+    console.log(getIsTapeTranscribed(this.tapeId, this.selectedTranscription), this.tapeId, this.selectedTranscription)
+    this.button.disabled = !this.tape || getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
+    this.mainBox.disabled = (!this.tape) || getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
   }
 }
 
