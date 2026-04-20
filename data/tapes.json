@@ -1,25 +1,46 @@
 {
-    "test": {
+    "tutorial": {
         "tape": "testmusic",
         "volume": 0.8,
-        "title": "test 3/4/99?",
-        "color_1": [0.68, 0.16, 0.4],
-        "color_2": [0.38, 0.05, 0.2],
-        "color_3": [0.95, 0.60, 0.43],
+        "title": "Tutorial",
+        "color_1": [0.96, 0.86, 0.85],
+        "color_2": [0.89, 0.75, 0.72],
+        "color_3": [0, 0, 0],
         "pointsToUnlock": 0,
         "transcriptions": [
-            "and so it came to pass that it was good",
-            "second voice is talking here",
-            "hello world"
+            "long live the revolution"
         ]
     },
-    "test2": {
+    "eq": {
         "tape": "testmusic",
         "volume": 0.8,
-        "title": "tape 2",
-        "color_1": [0.18, 0.16, 0.4],
-        "color_2": [0.18, 0.05, 0.2],
-        "color_3": [0.15, 0.60, 0.43],
+        "title": "Filters and EQ",
+        "color_1": [0.96, 0.86, 0.85],
+        "color_2": [0.89, 0.75, 0.72],
+        "color_3": [0, 0, 0],
+        "pointsToUnlock": 1,
+        "transcriptions": []
+    },
+    "spy_and_girl": {
+        "tape": "testmusic",
+        "volume": 0.8,
+        "title": "Lab Tape 6/3/98",
+        "color_1": [0.09, 0.27, 0.11],
+        "color_2": [0.47, 0.34, 0.38],
+        "color_3": [0.56, 0.64, 0.57],
+        "pointsToUnlock": 2,
+        "transcriptions": [
+            "Here's my setup. Uh, some of it. Some of it's off the shelf. It's like, there's all these different stories going on around you. And most of them are walled off and hidden. And these tapes give me a window into another world through people's conversations. Oh yeah hey okay well, look, I told you it was weird, right? I told you. I, I, Hey, you said you like a guy with hobbies. This is my hobby. Uh, yeah, I'm recording us. Yeah, but I can stop it though if you want.",
+            "Did you build this all yourself? Wow. So you just like recording other people's conversations? Private conversations. Well it's just super weird. Hey is it recording right now? Wait, this is all going on tape?"
+        ]
+    },
+    "spy_diary": {
+        "tape": "testmusic",
+        "volume": 0.8,
+        "title": "Diary 9/8/99",
+        "color_1": [0.09, 0.27, 0.11],
+        "color_2": [0.47, 0.34, 0.38],
+        "color_3": [0.56, 0.64, 0.57],
         "pointsToUnlock": 1,
         "transcriptions": [
             "and so it came to pass that it was good",

@@ -232,12 +232,14 @@ export default class TapeDrawer extends Thing {
       })
 
       const [complete, total] = getTapeTranscribedCount(this.tapes[i].id);
-      drawText({
-        text: `Transcriptions: ${complete}/${total}`,
-        depth: this.depth + 3,
-        color: complete === total ? [0.0, 1.0, 0.0] : [1.0, 1.0, 1.0],
-        position: vec2.add(vec2.add(this.position, this.getTapePos(i)), [1, 51]),
-      })
+      if (total > 0) {
+        drawText({
+          text: `Transcriptions: ${complete}/${total}`,
+          depth: this.depth + 3,
+          color: complete === total ? [0.0, 1.0, 0.0] : [1.0, 1.0, 1.0],
+          position: vec2.add(vec2.add(this.position, this.getTapePos(i)), [1, 51]),
+        })
+      }
     }
   }
 }

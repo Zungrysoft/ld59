@@ -44,7 +44,7 @@ export function checkTranscription(rawText) {
     const wasAlreadyTranscribed = getIsTapeTranscribed(bestTape, bestTranscription);
 
     if (wasAlreadyTranscribed) {
-      return ["This conversation has already been transcribed.", false];
+      return ["This speech has already been transcribed.", false];
     }
 
     setTapeTranscribed(bestTape, bestTranscription);
