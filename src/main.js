@@ -98,6 +98,14 @@ game.assets.sounds = await game.loadAudio({
   load: 'sounds/load.wav',
   rewind: 'sounds/rewind.wav',
   play: 'sounds/play.wav',
+  off: 'sounds/off.wav',
+  on: 'sounds/on.wav',
+  adjust: 'sounds/adjust.wav',
+  adjust2: 'sounds/adjust2.wav',
+  snip: 'sounds/snip.wav',
+  clack: 'sounds/clack.wav',
+  drawer_open: 'sounds/drawer_open.wav',
+  drawer_close: 'sounds/drawer_close.wav',
 })
 soundmanager.setSoundsTable(game.assets.sounds)
 

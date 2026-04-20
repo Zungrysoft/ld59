@@ -71,18 +71,18 @@ export default class TapeDrawer extends Thing {
   update() {
     const desiredY = this.isOpen ? 0 : -150;
     this.backgroundAlpha = u.map(Math.abs(this.position[1] - 0), 0, 100, 0.6, 0, true);
-    this.position[1] = u.lerp(this.position[1], desiredY, 0.3);
+    this.position[1] = u.lerp(this.position[1], desiredY, 0.2);
   }
 
   open(tapePlayerModule) {
     this.isOpen = true
     this.tapePlayerModule = tapePlayerModule;
-    //TODO: Sound
+    soundmanager.playSound('drawer_open', 0.7, 1.0);
   }
 
   close() {
     this.isOpen = false
-    //TODO: Sound
+    soundmanager.playSound('drawer_close', 0.7, 1.0);
   }
 
   isChildClickable(i) {
@@ -108,10 +108,12 @@ export default class TapeDrawer extends Thing {
   onClickChild(i) {
     if (i === 'left') {
       this.page --;
+      soundmanager.playSound('clack', 1.0, [0.5, 0.6]);
       return;
     }
     if (i === 'right') {
       this.page ++;
+      soundmanager.playSound('clack', 1.0, [0.5, 0.6]);
       return;
     }
     if (i === 'close') {

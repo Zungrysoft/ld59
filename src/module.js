@@ -122,17 +122,19 @@ export default class Module extends Thing {
       if (game.globals.connectingModule) {
         if (game.globals.connectingModule === this) {
           game.globals.connectingModule = null;
+          soundmanager.playSound('snip', 1.0, [0.7, 0.8])
         }
       }
       else {
         game.globals.connectingModule = this;
+        soundmanager.playSound('clack', 1.0, [0.7, 0.8]);
       }
     }
     else {
       if (game.globals.connectingModule) {
         const didAddConnection = game.globals.connectingModule.addConnection(this, key);
         if (didAddConnection) {
-          soundmanager.playSound('plug_in', 0.6, [0.7, 0.8]);
+          soundmanager.playSound('clack', 1.0, [0.8, 0.9]);
         }
         game.globals.connectingModule = null;
       }
@@ -144,12 +146,15 @@ export default class Module extends Thing {
         else {
           // TODO: Manual parameter adjustment
           if (this.parameters[key].isBoolean) {
+            soundmanager.playSound(this.parameterValues[key] ? 'off' : 'on', 1.0, [0.9, 1.0]);
             this.updateParameter(key, !this.parameterValues[key])
           }
           else {
+            soundmanager.playSound('adjust', 0.6, 1.0);
             this.editingParameter = key;
             this.editingStartMousePosition = [...game.mouse.position];
             this.editingParameterStartValue = this.parameterValues[key];
+            this.editingParameterLastSoundValue = this.parameterValues[key];
           }
         }
       }
@@ -184,6 +189,8 @@ export default class Module extends Thing {
 
         // Rebuild audio graph
         game.globals.audioSystem.rebuildGraph();
+
+        soundmanager.playSound('snip', 1.0, [0.7, 0.8])
 
         return true;
       }
@@ -243,6 +250,12 @@ export default class Module extends Thing {
       const paramDelta = ((oldPos[1] - curPos[1]) + (curPos[0] - oldPos[0])) / 120;
 
       this.updateParameter(this.editingParameter, u.clamp(this.editingParameterStartValue + paramDelta, 0, 1));
+
+      if (Math.abs(this.editingParameterLastSoundValue - this.parameterValues[this.editingParameter]) > 0.05) {
+        this.editingParameterLastSoundValue = this.parameterValues[this.editingParameter];
+        soundmanager.playSound('adjust2', 0.2, 1.0);
+      }
+      
     }
 
     // Automatic parameter adjustment from connections

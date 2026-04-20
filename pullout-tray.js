@@ -1,5 +1,6 @@
 import { getIsTapeTranscribed, getSavedHint, setSavedHint } from "./src/save.js";
 import { checkTranscription } from "./src/transcribing.js";
+import * as soundmanager from 'soundmanager'
 
 class PulloutTray extends HTMLElement {
   constructor() {
@@ -145,7 +146,7 @@ class PulloutTray extends HTMLElement {
 
       <div class="tray">
         <div class="tray-inner">
-          <textarea class="main-box" placeholder="Enter text here..." disabled>Load a tape to begin transcribing</textarea>
+          <textarea class="main-box" placeholder="Enter transcription here..." disabled>Load a tape to begin transcribing</textarea>
         </div>
         <div class="column">
           <div class="button-row">
@@ -197,11 +198,13 @@ class PulloutTray extends HTMLElement {
   open() {
     this.tray.classList.add("open");
     this.isOpen = true;
+    soundmanager.playSound('drawer_open', 0.7, 1.0);
   }
 
   close() {
     this.tray.classList.remove("open");
     this.isOpen = false;
+    soundmanager.playSound('drawer_close', 0.7, 1.0);
   }
 
   toggle() {

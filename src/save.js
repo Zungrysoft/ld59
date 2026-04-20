@@ -41,7 +41,10 @@ function generateHints() {
     let hints = [];
     for (let i = 0; i < tape.transcriptions.length; i ++) {
       const transcription = tape.transcriptions[i];
-      hints.push(generateHint(transcription.text, transcription.hintRate, transcription.hintGapLength, transcription.hintGapLengthRange));
+
+      const hint = transcription.hint || generateHint(transcription.text, transcription.hintRate, transcription.hintGapLength, transcription.hintGapLengthRange);
+
+      hints.push(hint);
     }
     ret[tapeId] = hints;
   }
