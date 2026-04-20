@@ -36,6 +36,9 @@ function checkLoad() {
 }
 
 export function getSavedHint(tapeId, transcription) {
+  if (getIsTapeTranscribed(tapeId, transcription)) {
+    return game.assets.data.tapes[tapeId].transcriptions[transcription].text;
+  }
   return saveData.hints?.[tapeId]?.[transcription];
 }
 

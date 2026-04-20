@@ -3,7 +3,6 @@ import * as game from 'game'
 import * as u from 'utils'
 import { getIsTapeTranscribed, setTapeTranscribed } from './save.js';
 
-const THRESHOLD = 0.7;
 const VALID_CHARS = "abcdefghijklmnopqrstuvwxyz1234567890 ";
 
 function stripString(rawText) {
@@ -17,41 +16,38 @@ function stripString(rawText) {
   return text.trim();
 }
 
-export function checkTranscription(rawText) {
+export function checkTranscription(tapeId, rawText) {
   const text = stripString(rawText);
 
-  let bestTape = null;
   let bestTranscription = null;
   let bestCorrectness = 0;
-  for (const tapeId in game.assets.data.tapes) {
-    const tape = game.assets.data.tapes[tapeId];
-    for (let i = 0; i < tape.transcriptions.length; i ++) {
-      const transcription = stripString(tape.transcriptions[i]);
+  const tape = game.assets.data.tapes[tapeId];
+  for (let i = 0; i < tape.transcriptions.length; i ++) {
+    const transcription = stripString(tape.transcriptions[i].text);
 
-      const dist = wordLevenshtein(text, transcription);
-      const correctness = 1 - u.clamp(dist / transcription.split(" ").length, 0, 1);
+    const dist = wordLevenshtein(text, transcription);
+    const correctness = 1 - u.clamp(dist / transcription.split(" ").length, 0, 1);
 
-      if (correctness >= THRESHOLD && correctness > bestCorrectness) {
-        bestCorrectness = correctness;
-        bestTape = tapeId;
-        bestTranscription = i;
-      }
+    console.log(rawText, transcription, tape.transcriptions[i].requiredCorrectness, dist, correctness);
+
+    if (correctness >= tape.transcriptions[i].requiredCorrectness && correctness > bestCorrectness) {
+      bestCorrectness = correctness;
+      bestTranscription = i;
     }
   }
 
-  if (bestTape) {
+  if (bestTranscription != null) {
     // First, save to localstorage
-    const wasAlreadyTranscribed = getIsTapeTranscribed(bestTape, bestTranscription);
+    const wasAlreadyTranscribed = getIsTapeTranscribed(tapeId, bestTranscription);
 
     if (wasAlreadyTranscribed) {
       return ["This speech has already been transcribed.", false];
     }
 
-    setTapeTranscribed(bestTape, bestTranscription);
+    setTapeTranscribed(tapeId, bestTranscription);
 
-    const tapeTitle = game.assets.data.tapes[bestTape].title;
     const accuracy = (bestCorrectness * 100).toFixed(1);
-    return [`Successfully transcribed conversation from \"${tapeTitle}\" with ${accuracy}% accuracy!`, true];
+    return [`Successfully transcribed conversation with ${accuracy}% accuracy!`, true];
   }
 
   return ["This transcription does not sufficiently match any tapes.", false];

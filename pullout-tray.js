@@ -185,7 +185,7 @@ class PulloutTray extends HTMLElement {
     this.button.addEventListener("click", () => {
       const text = this.getTopBoxText();
       if (text.length > 0) {
-        const [response, shouldClear] = checkTranscription(text);
+        const [response, shouldClear] = checkTranscription(this.tapeId, text);
         this.setResponseText(response);
         if (shouldClear) {
           this.setInputText("");
@@ -260,8 +260,6 @@ class PulloutTray extends HTMLElement {
   }
 
   updateState() {
-    const hasTape = !!this.tape;
-
     this.text = getSavedHint(this.tapeId, this.selectedTranscription);
     this.mainBox.value = this.text;
     const transcriptionCount = this.tape?.transcriptions?.length ?? 0;
@@ -271,7 +269,7 @@ class PulloutTray extends HTMLElement {
       button.classList.toggle("hidden-button", shouldHide);
       button.disabled = shouldHide || index === this.selectedTranscription;
     });
-    console.log(getIsTapeTranscribed(this.tapeId, this.selectedTranscription), this.tapeId, this.selectedTranscription)
+
     this.button.disabled = !this.tape || getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
     this.mainBox.disabled = (!this.tape) || getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
   }

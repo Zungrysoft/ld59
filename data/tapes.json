@@ -8,7 +8,12 @@
         "color_3": [0, 0, 0],
         "pointsToUnlock": 0,
         "transcriptions": [
-            "long live the revolution"
+            {   
+                "requiredCorrectness": 0.75,
+                "hintRate": 0,
+                "hintGapLength": 1,
+                "text": "Long live the revolution!"
+            }
         ]
     },
     "eq": {
@@ -30,8 +35,18 @@
         "color_3": [0.56, 0.64, 0.57],
         "pointsToUnlock": 2,
         "transcriptions": [
-            "Here's my setup. Uh, some of it. Some of it's off the shelf. It's like, there's all these different stories going on around you. And most of them are walled off and hidden. And these tapes give me a window into another world through people's conversations. Oh yeah hey okay well, look, I told you it was weird, right? I told you. I, I, Hey, you said you like a guy with hobbies. This is my hobby. Uh, yeah, I'm recording us. Yeah, but I can stop it though if you want.",
-            "Did you build this all yourself? Wow. So you just like recording other people's conversations? Private conversations. Well it's just super weird. Hey is it recording right now? Wait, this is all going on tape?"
+            {   
+                "requiredCorrectness": 0.85,
+                "hintRate": 0.6,
+                "hintGapLength": 3,
+                "text": "Here's my setup. Uh, some of it. Some of it's off the shelf. It's like, there's all these different stories going on around you. And most of them are walled off and hidden. And these tapes give me a window into another world through people's conversations. Oh yeah hey okay well, look, I told you it was weird, right? I told you. I, I, Hey, you said you like a guy with hobbies. This is my hobby. Uh, yeah, I'm recording us. Yeah, but I can stop it though if you want."
+            },
+            {   
+                "requiredCorrectness": 0.85,
+                "hintRate": 0.6,
+                "hintGapLength": 8,
+                "text": "Did you build this all yourself? Wow. So you just like recording other people's conversations? Private conversations. Well it's just super weird. Hey is it recording right now? Wait, this is all going on tape?"
+            }
         ]
     },
     "spy_diary": {
@@ -43,23 +58,12 @@
         "color_3": [0.56, 0.64, 0.57],
         "pointsToUnlock": 1,
         "transcriptions": [
-            "and so it came to pass that it was good",
-            "second voice is talking here",
-            "hello world"
-        ]
-    },
-    "test3": {
-        "tape": "testmusic",
-        "volume": 0.8,
-        "title": "diary",
-        "color_1": [0.98, 0.16, 0.4],
-        "color_2": [0.18, 0.95, 0.2],
-        "color_3": [0.15, 0.90, 0.43],
-        "pointsToUnlock": 0,
-        "transcriptions": [
-            "and so it came to pass that it was good",
-            "second voice is talking here",
-            "hello world"
+            {   
+                "requiredCorrectness": 0.75,
+                "hintRate": 0,
+                "hintGapLength": 1,
+                "text": "ssssss"
+            }
         ]
     }
 }
