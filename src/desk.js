@@ -27,7 +27,7 @@ export default class Desk extends Thing {
   update() {
     this.time++
 
-    this.clickables['transcribe'].aabb = this.getButtonAabb();
+    // this.clickables['transcribe'].aabb = this.getButtonAabb();
 
     if (game.keysPressed.KeyJ) {
       
@@ -35,6 +35,10 @@ export default class Desk extends Thing {
   }
 
   isChildClickable(key) {
+    if (game.getThing('tapeDrawer').isOpen) {
+      return false;
+    }
+    
     return true;
   }
 
@@ -53,14 +57,14 @@ export default class Desk extends Thing {
     }
   }
 
-  getButtonAabb() {
-    return [
-      0,
-      Math.max(game.getThing('tapeDrawer').position[1] + 144, 0),
-      24,
-      Math.max(game.getThing('tapeDrawer').position[1] + 144, 0) + 24
-    ]
-  }
+  // getButtonAabb() {
+  //   return [
+  //     0,
+  //     Math.max(game.getThing('tapeDrawer').position[1] + 144, 0),
+  //     24,
+  //     Math.max(game.getThing('tapeDrawer').position[1] + 144, 0) + 24
+  //   ]
+  // }
 
   draw() {
     drawBackground({
@@ -70,7 +74,8 @@ export default class Desk extends Thing {
 
     drawSprite({
       sprite: game.assets.textures[this.isTrayOpen ? 'transcribe_close' : 'transcribe'],
-      position: this.getButtonAabb(),
+      // position: this.getButtonAabb(),
+      position: [0, 0],
       width: 32,
       height: 32,
       color: this.clickables['transcribe'].isHighlighted ? HIGHLIGHT_YELLOW : [1, 1, 1],
