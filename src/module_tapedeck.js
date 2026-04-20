@@ -163,6 +163,9 @@ export default class ModuleTapedeck extends Module {
     soundmanager.playSound('load', 1.0, [0.9, 1.1]);
     this.isAtEndOfTape = false;
     this.isAtStartOfTape = true;
+
+    const tray = document.getElementById("tray");
+    tray.setNewTapeData(game.assets.data.tapes[tapeId], tapeId);
   }
 
   draw() {

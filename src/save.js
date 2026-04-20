@@ -3,6 +3,24 @@ import * as game from 'game'
 import * as u from 'utils'
 
 let saveData = null;
+// let selectedTranscription = 0;
+
+export function deleteSaveData() {
+  localStorage.removeItem('cutThroughSave')
+}
+
+function generateHints() {
+  let ret = {};
+  for (const tapeId in game.assets.data.tapes) {
+    const tape = game.assets.data.tapes[tapeId];
+    let hints = [];
+    for (let i = 0; i < tape.transcriptions.length; i ++) {
+      hints.push("HINT FOR " + i)
+    }
+    ret[tapeId] = hints;
+  }
+  return ret;
+}
 
 function checkLoad() {
   if (saveData == null) {
@@ -11,10 +29,30 @@ function checkLoad() {
       saveData = {
         version: 1,
         transcribedKeys: [],
+        hints: generateHints(),
       }
     }
   }
 }
+
+export function getSavedHint(tapeId, transcription) {
+  console.log(tapeId, transcription)
+  return saveData.hints?.[tapeId]?.[transcription];
+}
+
+export function setSavedHint(tapeId, transcription, text) {
+  if (saveData.hints?.[tapeId]?.[transcription] != null) {
+    saveData.hints[tapeId][transcription] = text;
+  }
+}
+
+// function setSelectedTranscriptionSave(i) {
+//   selectedTranscription = i;
+//   const tray = document.getElementById("tray");
+//   if (tray) {
+//     tray.setSelectedTranscription
+//   }
+// }
 
 function save() {
   localStorage.setItem('cutThroughSave', JSON.stringify(saveData));

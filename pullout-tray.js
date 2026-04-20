@@ -1,3 +1,4 @@
+import { getSavedHint } from "./src/save.js";
 import { checkTranscription } from "./src/transcribing.js";
 
 class PulloutTray extends HTMLElement {
@@ -32,13 +33,17 @@ class PulloutTray extends HTMLElement {
           background: #333333;
           border-top: 1px solid #aaa;
           transform: translateY(100%);
-          transition: transform 0.3s ease;
+          transition: transform 0.3s ease, background-color 0.2s ease;
           padding: 12px 0 12px 12px;
           pointer-events: auto;
         }
 
         .tray.open {
           transform: translateY(0);
+        }
+
+        .tray.flash-green {
+          background-color: #2f6b2f;
         }
 
         .column {
@@ -57,12 +62,12 @@ class PulloutTray extends HTMLElement {
           gap: 10px;
         }
 
-        .top-box {
+        .main-box {
           width: 100%;
+          flex: 1;
           resize: none;
           overflow: auto;
-          height: 3.5em;
-          line-height: 1.2;
+          min-height: 0;
           padding: 8px;
           font-size: 16px;
           font-family: Courier;
@@ -70,17 +75,16 @@ class PulloutTray extends HTMLElement {
           color: #e2e2e2;
         }
 
-        .bottom-box {
+        .button-row {
+          display: flex;
+          gap: 8px;
           width: 100%;
+          margin-bottom: 16px;
+        }
+
+        .button-row .button {
           flex: 1;
-          resize: both;
-          overflow: auto;
-          min-height: 60px;
-          padding: 8px;
-          font-size: 16px;
-          font-family: Courier;
-          background-color: #464646;
-          color: #e2e2e2;
+          margin-bottom: 0;
         }
 
         .text {
@@ -103,20 +107,40 @@ class PulloutTray extends HTMLElement {
 
       <div class="tray">
         <div class="tray-inner">
-          <textarea class="top-box" placeholder="Enter a transcription here..."></textarea>
-          <textarea class="bottom-box" placeholder="Notes"></textarea>
+          <textarea class="main-box" placeholder="Enter text here..."></textarea>
         </div>
         <div class="column">
-          <button class="button">Check Transcription</button>
+          <div class="button-row">
+            <button class="button transcription-button transcription-a" disabled>A</button>
+            <button class="button transcription-button transcription-b" disabled>B</button>
+            <button class="button transcription-button transcription-c" disabled>C</button>
+          </div>
+          <button class="button check-button">Check Transcription</button>
           <p class="text"></p>
         </div>
       </div>
     `;
 
     this.tray = shadow.querySelector(".tray");
-    this.topBox = shadow.querySelector(".top-box");
-    this.button = shadow.querySelector(".button");
-    this.text = shadow.querySelector(".text");
+    this.mainBox = shadow.querySelector(".main-box");
+    this.button = shadow.querySelector(".check-button");
+    this.textBox = shadow.querySelector(".text");
+
+    this.transcriptionButtons = [
+      shadow.querySelector(".transcription-a"),
+      shadow.querySelector(".transcription-b"),
+      shadow.querySelector(".transcription-c"),
+    ];
+
+    this.transcriptionButtons.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        this.onTranscriptionButtonClicked(index);
+      });
+    });
+
+    this.mainBox.addEventListener("input", () => {
+      this.onTextEdited(this.mainBox.value);
+    });
 
     this.button.addEventListener("click", () => {
       const text = this.getTopBoxText();
@@ -124,7 +148,7 @@ class PulloutTray extends HTMLElement {
         const [response, shouldClear] = checkTranscription(text);
         this.setResponseText(response);
         if (shouldClear) {
-          this.setInputText('');
+          this.setInputText("");
         }
       }
     });
@@ -149,16 +173,61 @@ class PulloutTray extends HTMLElement {
     }
   }
 
-  setResponseText(text) {
-    this.text.textContent = text;
+  setResponseText(text, status=null) {
+    this.textBox.textContent = text;
+
+    if (status === 'success') {
+      this.tray.classList.remove("flash-green");
+      void this.tray.offsetWidth;
+      this.tray.classList.add("flash-green");
+
+      clearTimeout(this.flashTimeout);
+      this.flashTimeout = setTimeout(() => {
+        this.tray.classList.remove("flash-green");
+      }, 200);
+    }
+  }
+
+  
+
+  getTopBoxText() {
+    return this.mainBox.value;
+  }
+
+  onTextEdited(newText) {
+  }
+
+  onTranscriptionButtonClicked(index) {
+    this.setSelectedTranscription(index);
+  }
+
+  setNewTapeData(tape, tapeId) {
+    this.tape = tape;
+    this.tapeId = tapeId;
+    this.selectedTranscription = 0;
+
+    this.updateState();
   }
 
   setInputText(text) {
-    this.topBox.value = text;
+    this.text = text;
+
+    this.updateState();
   }
 
-  getTopBoxText() {
-    return this.topBox.value;
+  setSelectedTranscription(selectedTranscription) {
+    this.selectedTranscription = selectedTranscription;
+
+    this.updateState();
+  }
+
+  updateState() {
+    this.text = getSavedHint(this.tapeId, this.selectedTranscription);
+    this.mainBox.value = this.text;
+    const transcriptionCount = this.tape?.transcriptions?.length
+    this.transcriptionButtons.forEach((button, index) => {
+      button.disabled = index >= transcriptionCount || index === this.selectedTranscription;
+    });
   }
 }
 

@@ -6,6 +6,7 @@ import Thing from 'thing'
 import { drawBackground, drawSprite, drawText } from './draw.js'
 import Clickable from './clickable.js'
 import { HIGHLIGHT_YELLOW } from './colors.js'
+import { deleteSaveData } from './save.js'
 
 export default class Desk extends Thing {
   time = 0
@@ -29,8 +30,8 @@ export default class Desk extends Thing {
 
     // this.clickables['transcribe'].aabb = this.getButtonAabb();
 
-    if (game.keysPressed.KeyJ) {
-      
+    if (game.keysPressed.KeyP && game.keysDown.ShiftLeft) {
+      deleteSaveData();
     }
   }
 
