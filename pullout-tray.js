@@ -260,9 +260,13 @@ class PulloutTray extends HTMLElement {
   }
 
   updateState() {
-    this.text = getSavedHint(this.tapeId, this.selectedTranscription);
-    this.mainBox.value = this.text;
     const transcriptionCount = this.tape?.transcriptions?.length ?? 0;
+
+    this.text = getSavedHint(this.tapeId, this.selectedTranscription);
+    if (transcriptionCount === 0) {
+      this.text = "This tape does not require transcription.";
+    }
+    this.mainBox.value = this.text;
 
     this.transcriptionButtons.forEach((button, index) => {
       const shouldHide = index >= transcriptionCount;
@@ -270,8 +274,8 @@ class PulloutTray extends HTMLElement {
       button.disabled = shouldHide || index === this.selectedTranscription;
     });
 
-    this.button.disabled = !this.tape || getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
-    this.mainBox.disabled = (!this.tape) || getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
+    this.button.disabled = !this.tape || getIsTapeTranscribed(this.tapeId, this.selectedTranscription) || transcriptionCount === 0;
+    this.mainBox.disabled = (!this.tape) || getIsTapeTranscribed(this.tapeId, this.selectedTranscription) || transcriptionCount === 0;
   }
 }
 

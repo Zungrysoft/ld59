@@ -48,7 +48,7 @@ export function checkTranscription(tapeId, rawText) {
     return [`Successfully transcribed conversation with ${accuracy}% accuracy!`, true];
   }
 
-  return ["This transcription does not sufficiently match any tapes.", false];
+  return ["This transcription is not sufficiently complete.", false];
   
 }
 
