@@ -181,14 +181,16 @@ export default class Module extends Thing {
     return null;
   }
 
-  removeConnection(module, parameter) {
+  removeConnection(module, parameter, noUpdate) {
     for (let i = 0; i < this.connections.length; i ++) {
       const connection = this.connections[i];
       if (connection.module === module && connection.parameter === parameter) {
         this.connections.splice(i, 1);
 
         // Rebuild audio graph
-        game.globals.audioSystem.rebuildGraph();
+        if (!noUpdate) {
+          game.globals.audioSystem.rebuildGraph();
+        }
 
         soundmanager.playSound('snip', 1.0, [0.7, 0.8])
 
@@ -209,15 +211,48 @@ export default class Module extends Thing {
     // Each output can only have one input
     const oldModule = module.getPreviousModule(parameter);
     if (oldModule) {
-      oldModule.removeConnection(module, parameter);
+      oldModule.removeConnection(module, parameter, noUpdate);
     }
 
     this.connections.push({ module, parameter });
+
+    this.removeCycles();
 
     // Rebuild audio graph
     game.globals.audioSystem.rebuildGraph();
 
     return true;
+  }
+
+  removeCycles() {
+    const speakers = game.getThing('speakers');
+    let startedVisit = new Set();
+    let endedVisit = new Set();
+    let removedNodes = [];
+    this.removeCyclesDfs(speakers, startedVisit, endedVisit, removedNodes);
+    for (const r of removedNodes) {
+      r.oldModule.removeConnection(r.module, r.parameter, true);
+    }
+  }
+
+  removeCyclesDfs(module, startedVisit, endedVisit, removedNodes) {
+    startedVisit.add(module);
+    for (const param in this.parameters) {
+      const prev = module.getPreviousModule(param);
+      if (prev) {
+        if (startedVisit.has(prev) && !endedVisit.has(prev)) {
+          removedNodes.push({
+            module,
+            oldModule: prev,
+            parameter: param,
+          });
+        }
+        if (!startedVisit.has(prev)) {
+          this.removeCyclesDfs(prev, startedVisit, endedVisit, removedNodes);
+        }
+      }
+    }
+    endedVisit.add(module);
   }
 
   updateParameter(parameter, value) {
