@@ -130,10 +130,10 @@ export default class TapeDrawer extends Thing {
   }
 
   isTapeHere(tapeId) {
-    // const [totalTranscribedCount, _] = getTotalTranscribedCount();
-    // if (totalTranscribedCount < game.assets.data.tapes[tapeId].pointsToUnlock) {
-    //   return false;
-    // }
+    const [totalTranscribedCount, _] = getTotalTranscribedCount();
+    if (totalTranscribedCount < game.assets.data.tapes[tapeId].pointsToUnlock) {
+      return false;
+    }
 
     for (const tapedeck of game.getThings().filter(x => x instanceof ModuleTapedeck)) {
       if (tapedeck.loadedTape === tapeId) {

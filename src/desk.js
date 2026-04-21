@@ -83,7 +83,7 @@ export default class Desk extends Thing {
       spawnedIds.add(module.nodeId);
     }
     for (const config of modules) {
-      if (!spawnedIds.has(config.nodeId) /*&& this.totalTranscribed >= config.pointsToUnlock*/) {
+      if (!spawnedIds.has(config.nodeId) && this.totalTranscribed >= config.pointsToUnlock) {
         this.spawnModule(config, offScreen);
       }
     }
