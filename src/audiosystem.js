@@ -551,7 +551,7 @@ export default class AudioGraphManager {
       const finished = !node.buffer || newOffset >= node.buffer.duration - 0.001;
 
       this.playState.set(key, {
-        offset: finished ? 0 : newOffset,
+        offset: newOffset,
         startedAt: 0,
         playing: false
       });

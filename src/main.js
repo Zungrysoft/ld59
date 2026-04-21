@@ -107,20 +107,20 @@ soundmanager.setSoundsTable(game.assets.sounds)
 
 const audioSystem = new AudioGraphManager();
 game.assets.tapes = await game.loadTapes(audioSystem.ctx, {
-  standoff: 'sounds/tapes/standoff.wav',
-  tutorial1: 'sounds/tapes/tutorial1.wav',
-  tutorial2: 'sounds/tapes/tutorial2.wav',
-  bodycam: 'sounds/tapes/bodycam.wav',
-  lab: 'sounds/tapes/lab.wav',
-  diary: 'sounds/tapes/diary.wav',
-  gasstation: 'sounds/tapes/gasstation.wav',
-  court: 'sounds/tapes/court.wav',
-  outro: 'sounds/tapes/outro.wav',
-  carphone: 'sounds/tapes/carphone.wav',
-  phone: 'sounds/tapes/phone.wav',
-  politics: 'sounds/tapes/politics.wav',
-  fight: 'sounds/tapes/fight.wav',
-  defect: 'sounds/tapes/defect.wav',
+  standoff: 'sounds/tapes/standoff_mono.mp3',
+  tutorial1: 'sounds/tapes/tutorial1_mono.mp3',
+  tutorial2: 'sounds/tapes/tutorial2_mono.mp3',
+  bodycam: 'sounds/tapes/bodycam_mono.mp3',
+  lab: 'sounds/tapes/lab_mono.mp3',
+  diary: 'sounds/tapes/diary_mono.mp3',
+  gasstation: 'sounds/tapes/gasstation_mono.mp3',
+  court: 'sounds/tapes/court_mono.mp3',
+  outro: 'sounds/tapes/outro_mono.mp3',
+  carphone: 'sounds/tapes/carphone_mono.mp3',
+  phone: 'sounds/tapes/phone_mono.mp3',
+  politics: 'sounds/tapes/politics_mono.mp3',
+  fight: 'sounds/tapes/fight_mono.mp3',
+  defect: 'sounds/tapes/defect_mono.mp3',
 })
 
 game.assets.textures = Object.fromEntries(
