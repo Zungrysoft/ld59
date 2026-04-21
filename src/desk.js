@@ -33,13 +33,13 @@ const modules = [
     "type": "eq",
     "nodeId": "eq1",
     "position": [200, 220],
-    "pointsToUnlock": 6
+    "pointsToUnlock": 5
   },
   {
     "type": "lowpass",
     "nodeId": "eq2",
     "position": [171, 70],
-    "pointsToUnlock": 3
+    "pointsToUnlock": 2
   },
   {
     "type": "highpass",
@@ -49,9 +49,9 @@ const modules = [
   },
   {
     "type": "oscillator",
-    "nodeId": "",
+    "nodeId": "sine1",
     "position": [20, 270],
-    "pointsToUnlock": 11
+    "pointsToUnlock": 10
   },
 ];
 
@@ -83,7 +83,7 @@ export default class Desk extends Thing {
       spawnedIds.add(module.nodeId);
     }
     for (const config of modules) {
-      if (!spawnedIds.has(config.nodeId) && this.totalTranscribed >= config.pointsToUnlock) {
+      if (!spawnedIds.has(config.nodeId) /*&& this.totalTranscribed >= config.pointsToUnlock*/) {
         this.spawnModule(config, offScreen);
       }
     }

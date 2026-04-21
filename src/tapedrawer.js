@@ -10,7 +10,7 @@ import { getTapeTranscribedCount, getTotalTranscribedCount } from './save.js'
 import ModuleTapedeck from './module_tapedeck.js'
 import { DISABLED_GREY, HIGHLIGHT_YELLOW } from './colors.js'
 
-const TAPES_PER_PAGE = 10;
+const TAPES_PER_PAGE = 12;
 
 const BUTTON_POS_LEFT = [192, 119];
 const BUTTON_POS_RIGHT = [192 + 32, 119];
@@ -130,10 +130,10 @@ export default class TapeDrawer extends Thing {
   }
 
   isTapeHere(tapeId) {
-    const [totalTranscribedCount, _] = getTotalTranscribedCount();
-    if (totalTranscribedCount < game.assets.data.tapes[tapeId].pointsToUnlock) {
-      return false;
-    }
+    // const [totalTranscribedCount, _] = getTotalTranscribedCount();
+    // if (totalTranscribedCount < game.assets.data.tapes[tapeId].pointsToUnlock) {
+    //   return false;
+    // }
 
     for (const tapedeck of game.getThings().filter(x => x instanceof ModuleTapedeck)) {
       if (tapedeck.loadedTape === tapeId) {
@@ -206,7 +206,7 @@ export default class TapeDrawer extends Thing {
         position: vec2.add(this.position, this.getTapePos(i)),
         width: 128,
         height: 128,
-        color: this.tapes[i].color_1,
+        color: this.tapes[ind].color_1,
         depth: this.depth + 1,
       })
       drawSprite({
@@ -214,7 +214,7 @@ export default class TapeDrawer extends Thing {
         position: vec2.add(this.position, this.getTapePos(i)),
         width: 128,
         height: 128,
-        color: this.tapes[i].color_2,
+        color: this.tapes[ind].color_2,
         depth: this.depth + 1,
       })
       if (this.clickables[i].isHighlighted) {
@@ -227,13 +227,13 @@ export default class TapeDrawer extends Thing {
         })
       }
       drawText({
-        text: this.tapes[i].title,
+        text: this.tapes[ind].title,
         depth: this.depth + 2,
-        color: this.tapes[i].color_3,
+        color: this.tapes[ind].color_3,
         position: vec2.add(vec2.add(this.position, this.getTapePos(i)), [9, 9]),
       })
 
-      const [complete, total] = getTapeTranscribedCount(this.tapes[i].id);
+      const [complete, total] = getTapeTranscribedCount(this.tapes[ind].id);
       if (total > 0) {
         drawText({
           text: `Transcriptions: ${complete}/${total}`,

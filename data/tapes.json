@@ -1,6 +1,6 @@
 {
     "tutorial": {
-        "tape": "testmusic",
+        "tape": "tutorial1",
         "volume": 0.8,
         "title": "Tutorial",
         "color_1": [0.96, 0.86, 0.85],
@@ -18,7 +18,7 @@
         ]
     },
     "eq": {
-        "tape": "testmusic",
+        "tape": "tutorial2",
         "volume": 0.8,
         "title": "Filters and EQ",
         "color_1": [0.96, 0.86, 0.85],
@@ -27,19 +27,125 @@
         "pointsToUnlock": 1,
         "transcriptions": []
     },
+    "silent_standoff": {
+        "tape": "standoff",
+        "volume": 0.8,
+        "title": "Reggie 9/4/99 A",
+        "color_1": [0.1, 0.1, 0.1],
+        "color_2": [0.73, 0, 0.35],
+        "color_3": [1, 1, 1],
+        "pointsToUnlock": 1,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.85,
+                "hint": "Five minutes - When London - little chat. - not before.",
+                "speaker": "Mikael Guerra",
+                "text": "Five minutes away, he says. When London gets here, we're gonna have a little chat. But not before."
+            }
+        ]
+    },
+    "phone_london_car": {
+        "tape": "carphone",
+        "volume": 0.8,
+        "title": "Reggie 9/3/99",
+        "color_1": [0.1, 0.1, 0.1],
+        "color_2": [0, 0, 1],
+        "color_3": [1, 1, 1],
+        "pointsToUnlock": 1,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.8,
+                "hintRate": 0.7,
+                "hintGapLength": 8,
+                "hintGapLengthRange": 3,
+                "speaker": "London Lewis",
+                "text": "Yeah, I got the car. Yeah, it's a Jeep. The suspension is fucking insane. No, no we'll have to get gas on the road. Well the, the less time the car is out in the open the better. We just get gas on the way. I'll ask him. Reggie! You packed yet? Says he's gonna pack the morning before."
+            },
+            {
+                "requiredCorrectness": 0.7,
+                "hint": "Yeah? -",
+                "speaker": "Reggie Stevens",
+                "text": "Yeah? No, I'm gonna pack the morning before."
+            }
+        ]
+    },
+    "bodycam": {
+        "tape": "bodycam",
+        "volume": 0.8,
+        "title": "Bodycam 9/4/99",
+        "color_1": [0.07, 0.15, 0.45],
+        "color_2": [0, 0, 0],
+        "color_3": [1, 1, 1],
+        "pointsToUnlock": 2,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.65,
+                "hint": "Hands! Let me see -",
+                "speaker": "Officer Jacob Greenwood",
+                "text": "Hands! Let me see your hands! Stop Resisting! Get down, motherfucker!"
+            },
+            {
+                "requiredCorrectness": 0.75,
+                "hint": "Show me your -",
+                "speaker": "Officer Michael Erland",
+                "text": "Show me your fucking hands!"
+            },
+            {
+                "requiredCorrectness": 0.75,
+                "hint": "- off of me!",
+                "speaker": "Reggie Stevens",
+                "text": "Fuck you! Fuck you! Get the fuck off of me!"
+            }
+        ]
+    },
+    "talking_politics": {
+        "tape": "politics",
+        "volume": 0.8,
+        "title": "Reggie 8/16/99",
+        "color_1": [0.1, 0.1, 0.1],
+        "color_2": [1, 1, 0],
+        "color_3": [1, 1, 1],
+        "pointsToUnlock": 2,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.8,
+                "hintRate": 0.7,
+                "hintGapLength": 8,
+                "hintGapLengthRange": 3,
+                "speaker": "Mikael Guerra", 
+                "text": "I mean it's scary right? Closing the border. Even temporarily. Who fucking knows? It's fucking crazy, man. It's all happening so fast. This party has only been in power for two weeks. It's making all these sweeping changes. She's ' drunk a lot of the kool-aid."
+            },
+            {
+                "requiredCorrectness": 0.8,
+                "hintRate": 0.7,
+                "hintGapLength": 5,
+                "hintGapLengthRange": 2,
+                "speaker": "London Lewis",
+                "text": "It's fucking terrifying. Is it temporary though? I wonder what your sister thinks of all this."
+            },
+            {
+                "requiredCorrectness": 0.8,
+                "hintRate": 0.6,
+                "hintGapLength": 10,
+                "hintGapLengthRange": 3,
+                "speaker": "Reggie Stevens",
+                "text": "Insane. Well there's nothing more permanent than a temporary government measure. Ellen? I mean, who fucking knows with her? But, but she's no dummy.Yeah, but, the way she's been talking since the inauguration, I mean, I think she's changing her tune a little bit. She's not a fascist, guys. Just, you know, a little nationalistic."
+            }
+        ]
+    },
     "spy_and_girl": {
-        "tape": "testmusic",
+        "tape": "lab",
         "volume": 0.8,
         "title": "Lab Tape 6/3/98",
         "color_1": [0.09, 0.27, 0.11],
         "color_2": [0.47, 0.34, 0.38],
         "color_3": [0.56, 0.64, 0.57],
-        "pointsToUnlock": 1,
+        "pointsToUnlock": 5,
         "transcriptions": [
             {
                 "requiredCorrectness": 0.85,
                 "hintRate": 0.6,
-                "hintGapLength": 3,
+                "hintGapLength": 6,
                 "hintGapLengthRange": 2,
                 "speaker": "Vincent Lagrange",
                 "text": "Here's my setup. Uh, some of it. Some of it's off the shelf. It's like, there's all these different stories going on around you. And most of them are walled off and hidden. And these tapes give me a window into another world through people's conversations. Oh yeah hey okay well, look, I told you it was weird, right? I told you. I, I, Hey, you said you like a guy with hobbies. This is my hobby. Uh, yeah, I'm recording us. Yeah, but I can stop it though if you want."
@@ -47,30 +153,205 @@
             {   
                 "requiredCorrectness": 0.85,
                 "hintRate": 0.6,
-                "hintGapLength": 7,
+                "hintGapLength": 10,
                 "hintGapLengthRange": 3,
                 "speaker": "Unidentified Female",
                 "text": "Did you build this all yourself? Wow. So you just like recording other people's conversations? Private conversations. Well it's just super weird. Hey is it recording right now? Wait, this is all going on tape?"
+            },
+            {
+                "requiredCorrectness": 0.92,
+                "hintRate": 0.8,
+                "hintGapLength": 10,
+                "hintGapLengthRange": 3,
+                "speaker": "General Young",
+                "text": "This is an update about our country's border policy. Until further notice, all borders are now closed for reasons of national security. This is to protect our soldiers as well as the lives of our citizens at home. If you have pressing business outside of the country, you may apply for a temporary visa through the department of war."
+            }
+        ]
+    },
+    "defecting": {
+        "tape": "defect",
+        "volume": 0.8,
+        "title": "Reggie 8/29/99",
+        "color_1": [0.1, 0.1, 0.1],
+        "color_2": [0, 0.8, 0],
+        "color_3": [1, 1, 1],
+        "pointsToUnlock": 6,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.82,
+                "hintRate": 0.8,
+                "hintGapLength": 8,
+                "hintGapLengthRange": 3,
+                "speaker": "Mikael Guerra",
+                "text": "Oh, fuck off! You know things are getting really bad right? Today it's banning firearms, then tomorrow they're putting fucking hidden microphones in everyone's houses. We jump the border. Get the fuck out while we still have time. There's one spot we can get through."
+            },
+            {
+                "requiredCorrectness": 0.82,
+                "hintRate": 0.8,
+                "hintGapLength": 5, 
+                "hintGapLengthRange": 2,
+                "speaker": "London Lewis",
+                "text": "They're bad for sure, I'm just saying- Okay, okay, I get it. But what the hell are you saying we do? Just like that? Leave everything behind?"
+            },
+            {
+                "requiredCorrectness": 0.8,
+                "hint": "There's land mines surrounding most of the country -",
+                "speaker": "Reggie Stevens",
+                "text": "There's land mines surrounding most of the country and a border wall around the rest."
+            }
+        ]
+    },
+    "reggie_phone_call": {
+        "tape": "phone",
+        "volume": 0.8,
+        "title": "Reggie 8/30/99",
+        "color_1": [0.1, 0.1, 0.1],
+        "color_2": [1, 0.79, 0.79],
+        "color_3": [1, 1, 1],
+        "pointsToUnlock": 10,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.8,
+                "hintRate": 0.6,
+                "hintGapLength": 10,
+                "hintGapLengthRange": 3,
+                "speaker": "Reggie Stevens",
+                "text": "Only six shells. Because it's for home defense, Mikael, not for being an action hero. Where would I get ammo right now? Look, if we end up needing it, we're probably fucked anyway, right? Yeah. Yeah. Okay then. Yeah. Oh wait actually, one more thing, I want to get Ellen in on this with us No, she's totally flipped. She's gotten on our side, I promise you. Come on, you're being paranoid, she's my sister, man. Because I know, dude. And I don't appreciate this line of questioning."
             }
         ]
     },
     "spy_diary": {
-        "tape": "testmusic",
+        "tape": "diary",
         "volume": 0.8,
         "title": "Diary 9/8/99",
         "color_1": [0.09, 0.27, 0.11],
         "color_2": [0.47, 0.34, 0.38],
         "color_3": [0.56, 0.64, 0.57],
-        "pointsToUnlock": 1,
+        "pointsToUnlock": 10,
         "transcriptions": [
-            {   
-                "requiredCorrectness": 0.75,
-                "hintRate": 0,
-                "hintGapLength": 22,
-                "hintGapLengthRange": 4,
+            {
+                "requiredCorrectness": 0.9,
+                "hintRate": 0.7,
+                "hintGapLength": 8,
+                "hintGapLengthRange": 2,
                 "speaker": "Vincent Lagrange",
-                "text": "ssssss"
+                "text": "Warrants are now a thing of the past. They can just walk into your house and search it whenever they want. I've been thinking I might have to destroy these tapes, or record over them or something. I know the odds are low that they would search my house, but if they did... I have a lot of incriminating stuff here. Hell, this tape might not survive the week."
             }
         ]
+    },
+    "gas_station": {
+        "tape": "gasstation",
+        "volume": 0.8,
+        "title": "Village Gas 9/4/99",
+        "color_1": [0.83, 0.80, 0.33],
+        "color_2": [0.23, 0.23, 0.17],
+        "color_3": [0.09, 0.09, 0.06],
+        "pointsToUnlock": 10,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.76,
+                "hintRate": 0.55,
+                "hintGapLength": 5,  
+                "hintGapLengthRange": 2,
+                "speaker": "London Lewis",  
+                "text": "Just ten bucks on pump seven. Sure? Sure. I don't know. Something's off. Doesn't feel right."
+            },
+            {
+                "requiredCorrectness": 0.75,
+                "hintRate": 0.6,
+                "hintGapLength": 8,
+                "hintGapLengthRange": 3,
+                "speaker": "Reggie Stevens",
+                "text": "Get this too. Lemon crunch bars. I don't think they're sold outside of the country. So these may be the last ones we ever have. Where's the cashier guy?"
+            },
+            {
+                "requiredCorrectness": 0.7,
+                "hintRate": 0.3,
+                "hintGapLength": 4,
+                "hintGapLengthRange": 1,
+                "speaker": "Attendant",
+                "text": "Sure. Would you hold on just a moment please?"
+            }
+        ]
+    },
+    "screaming_match": {
+        "tape": "fight",
+        "volume": 0.8,
+        "title": "Reggie 9/4/99 B",
+        "color_1": [0.1, 0.1, 0.1],
+        "color_2": [0.95, 0, 0.90],
+        "color_3": [1, 1, 1],
+        "pointsToUnlock": 14,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.8,
+                "hintRate": 0.72,
+                "hintGapLength": 12,
+                "hintGapLengthRange": 5,
+                "speaker": "Mikael Guerra",
+                "text": "She attended rallies! She canvassed for them! She got the fucking tattoo on her neck! You don't do those things unless you are a true believer! Wrong! Fucking Wrong! Anyone with a pulse could seen that coming a mile away! You keep saying how your sister is so fucking smart, but then she falls for the most blatant propaganda! No, I think your sister is smart. She's smart enough to convince you to tell her and therefore all of the party all about our plans and you were dumb enough to fall for it! You're goddamn right he fucked us! Well it's two against 1!"
+            },
+            {
+                "requiredCorrectness": 0.76,
+                "hintRate": 0.55,
+                "hintGapLength": 5,  
+                "hintGapLengthRange": 2,
+                "speaker": "London Lewis",  
+                "text": "Reggie, Mikael's right. You fucked us. I say we leave right now. Then we have a head start."
+            },
+            {
+                "requiredCorrectness": 0.75,
+                "hintRate": 0.6,
+                "hintGapLength": 8,
+                "hintGapLengthRange": 3,
+                "speaker": "Reggie Stevens",
+                "text": "The party wasn't always this extreme, they started moderate and then- Fuck you, you fucking asshole! I'm not leaving without Ellen, I already told you- Fuck!"
+            }
+        ]
+    },
+    "courtroom": {
+        "tape": "court",
+        "volume": 0.8,
+        "title": "Court 11/24/01",
+        "color_1": [0.53, 0.42, 0.20],
+        "color_2": [0.87, 0.86, 0.44],
+        "color_3": [0.95, 0.94, 0.79],
+        "pointsToUnlock": 17,
+        "transcriptions": [
+            {
+                "requiredCorrectness": 0.76,
+                "hintRate": 0.85,
+                "hintGapLength": 5,  
+                "hintGapLengthRange": 2,
+                "speaker": "Daniel Myers",  
+                "text": "Is it true that you embarked upon these traitorous acts, acts which have brought serious shame upon your country and therefore yourself, in conjunction with two co-conspirators whose whereabouts you have continued to conceal? I'm the lawyer here, Mr. Stevens, not you. Please answer the question. Your honor- I see. And you continue to maintain this obvious lie despite the mountains of audio evidence to the contrary. Answer the question, Mr. Stevens."
+            },
+            {
+                "requiredCorrectness": 0.8,
+                "hintRate": 0.72,
+                "hintGapLength": 5,
+                "hintGapLengthRange": 2,
+                "speaker": "Reggie Stevens",
+                "text": "Objection, leading? It's a bullshit question. No. I acted alone. Am I seriously supposed to- I already told you that- Yes"
+            },
+            {
+                "requiredCorrectness": 0.75,
+                "hintRate": 0.8,
+                "hintGapLength": 8,
+                "hintGapLengthRange": 3,
+                "speaker": "The Right Honourable Judge Winters",
+                "text": "The witness will answer the question or he will be held in contempt of court. The witness will answer the prosecution’s questions with a simple yes or no."
+            }
+        ]
+    },
+    "outro": {
+        "tape": "outro",
+        "volume": 0.8,
+        "title": "Outro",
+        "color_1": [0.96, 0.86, 0.85],
+        "color_2": [0.89, 0.75, 0.72],
+        "color_3": [0, 0, 0],
+        "pointsToUnlock": 17,
+        "transcriptions": []
     }
 }

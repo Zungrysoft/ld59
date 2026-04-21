@@ -107,8 +107,20 @@ soundmanager.setSoundsTable(game.assets.sounds)
 
 const audioSystem = new AudioGraphManager();
 game.assets.tapes = await game.loadTapes(audioSystem.ctx, {
-  testmusic: 'sounds/tapes/testmusic.mp3',
-  testsound: 'sounds/load.wav',
+  standoff: 'sounds/tapes/standoff.wav',
+  tutorial1: 'sounds/tapes/tutorial1.wav',
+  tutorial2: 'sounds/tapes/tutorial2.wav',
+  bodycam: 'sounds/tapes/bodycam.wav',
+  lab: 'sounds/tapes/lab.wav',
+  diary: 'sounds/tapes/diary.wav',
+  gasstation: 'sounds/tapes/gasstation.wav',
+  court: 'sounds/tapes/court.wav',
+  outro: 'sounds/tapes/outro.wav',
+  carphone: 'sounds/tapes/carphone.wav',
+  phone: 'sounds/tapes/phone.wav',
+  politics: 'sounds/tapes/politics.wav',
+  fight: 'sounds/tapes/fight.wav',
+  defect: 'sounds/tapes/defect.wav',
 })
 
 game.assets.textures = Object.fromEntries(
