@@ -10,14 +10,18 @@ import TapeDrawer from './tapedrawer.js'
 
 export default class TitleScreen extends Thing {
   page = 0
+  time = 0
 
   constructor() {
     super();
   }
 
   update() {
-    if (game.mouse.leftClick) {
+    this.time ++;
+
+    if (game.mouse.leftClick && this.time > 30) {
       this.page ++;
+      this.time = 0;
 
       soundmanager.playSound('clack', 1.0, 0.4)
 
