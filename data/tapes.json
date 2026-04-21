@@ -113,7 +113,7 @@
                 "hintGapLength": 8,
                 "hintGapLengthRange": 3,
                 "speaker": "Mikael Guerra", 
-                "text": "I mean it's scary right? Closing the border. Even temporarily. Who fucking knows? It's fucking crazy, man. It's all happening so fast. This party has only been in power for two weeks. It's making all these sweeping changes. She's ' drunk a lot of the kool-aid."
+                "text": "I mean it's scary right? Closing the border. Even temporarily. Who fucking knows? It's fucking crazy, man. It's all happening so fast. This party has only been in power for two weeks. It's making all these sweeping changes. She's drunk a lot of the kool-aid."
             },
             {
                 "requiredCorrectness": 0.8,
@@ -253,8 +253,8 @@
                 "hintRate": 0.55,
                 "hintGapLength": 5,  
                 "hintGapLengthRange": 2,
-                "speaker": "London Lewis",  
-                "text": "Just ten bucks on pump seven. Sure? Sure. I don't know. Something's off. Doesn't feel right."
+                "speaker": "London Lewis",
+                "text": "Just ten bucks on pump seven. Sure? Sure. I don't know. Something's off."
             },
             {
                 "requiredCorrectness": 0.75,
@@ -289,7 +289,7 @@
                 "hintGapLength": 12,
                 "hintGapLengthRange": 5,
                 "speaker": "Mikael Guerra",
-                "text": "She attended rallies! She canvassed for them! She got the fucking tattoo on her neck! You don't do those things unless you are a true believer! Wrong! Fucking Wrong! Anyone with a pulse could seen that coming a mile away! You keep saying how your sister is so fucking smart, but then she falls for the most blatant propaganda! No, I think your sister is smart. She's smart enough to convince you to tell her and therefore all of the party all about our plans and you were dumb enough to fall for it! You're goddamn right he fucked us! Well it's two against 1!"
+                "text": "She attended rallies! She canvassed for them! She got the fucking tattoo on her neck! You don't do those things unless you are a true believer! Wrong! Fucking Wrong! Anyone with a pulse could seen that coming a mile away! You keep saying how your sister is so fucking smart, but then she falls for the most blatant propaganda! No, I think your sister is smart. She's smart enough to convince you to tell her and therefore all of the party all about our plans and you were dumb enough to fall for it! You're goddamn right he fucked us! Well it's two against one!"
             },
             {
                 "requiredCorrectness": 0.76,
@@ -351,7 +351,7 @@
         "color_1": [0.96, 0.86, 0.85],
         "color_2": [0.89, 0.75, 0.72],
         "color_3": [0, 0, 0],
-        "pointsToUnlock": 17,
+        "pointsToUnlock": 18,
         "transcriptions": []
     }
 }
