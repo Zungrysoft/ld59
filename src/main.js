@@ -16,7 +16,7 @@ ctx.fillStyle = 'white'
 ctx.font = 'italic bold 20px Arial'
 ctx.fillText('Loading audio...', 16, game.getHeight() - 32)
 ctx.font = 'italic bold 16px Arial'
-ctx.fillText('(this may take a minute or so)', 16, game.getHeight() - 16)
+ctx.fillText('(this may take several minutes)', 16, game.getHeight() - 16)
 ctx.restore()
 
 let fontData = {};
