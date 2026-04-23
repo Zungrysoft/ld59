@@ -282,7 +282,7 @@ class PulloutTray extends HTMLElement {
     const isTranscribed = getIsTapeTranscribed(this.tapeId, this.selectedTranscription);
 
     this.text = getSavedHint(this.tapeId, this.selectedTranscription);
-    this.titleText = `Transcribe '${this.tape.title}'`;
+    this.titleText = `Transcribe '${this.tape.title}' - ${['First', 'Second', 'Third'][this.selectedTranscription]} speaker`;
     if (transcriptionCount === 0) {
       this.text = "";
       this.titleText = "This tape does not require transcription";

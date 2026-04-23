@@ -129,9 +129,16 @@ export default class TapeDrawer extends Thing {
     }
   }
 
-  isTapeHere(tapeId) {
+  isTapeUnlocked(tapeId) {
     const [totalTranscribedCount, _] = getTotalTranscribedCount();
     if (totalTranscribedCount < game.assets.data.tapes[tapeId].pointsToUnlock) {
+      return false;
+    }
+    return true;
+  }
+
+  isTapeHere(tapeId) {
+    if (!this.isTapeUnlocked(tapeId)) {
       return false;
     }
 
@@ -190,10 +197,23 @@ export default class TapeDrawer extends Thing {
         break;
       }
 
+      if (this.isTapeUnlocked(this.tapes[ind].id)) {
+        const [complete, total] = getTapeTranscribedCount(this.tapes[ind].id);
+        if (total > 0) {
+          drawText({
+            text: `Transcriptions: ${complete}/${total}`,
+            depth: this.depth + 3,
+            color: complete === total ? [0.0, 1.0, 0.0] : [1.0, 1.0, 1.0],
+            position: vec2.add(vec2.add(this.position, this.getTapePos(i)), [1, 51]),
+          })
+        }
+      }
+
       if (!this.isTapeHere(this.tapes[ind].id)) {
         continue;
       }
-
+      
+      // Tape select
       drawSprite({
         sprite: game.assets.textures.tape,
         position: vec2.add(this.position, this.getTapePos(i)),
@@ -232,16 +252,6 @@ export default class TapeDrawer extends Thing {
         color: this.tapes[ind].color_3,
         position: vec2.add(vec2.add(this.position, this.getTapePos(i)), [9, 9]),
       })
-
-      const [complete, total] = getTapeTranscribedCount(this.tapes[ind].id);
-      if (total > 0) {
-        drawText({
-          text: `Transcriptions: ${complete}/${total}`,
-          depth: this.depth + 3,
-          color: complete === total ? [0.0, 1.0, 0.0] : [1.0, 1.0, 1.0],
-          position: vec2.add(vec2.add(this.position, this.getTapePos(i)), [1, 51]),
-        })
-      }
     }
   }
 }
